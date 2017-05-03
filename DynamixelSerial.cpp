@@ -4,7 +4,7 @@
 #include "WProgram.h"
 #endif
 
-#include "DynamixelSerialMathieu.h"
+#include "DynamixelSerial.h"
 
 #define sendData(args)  (varSerial->write(args))    // Write Over Serial
 #define availableData() (varSerial->available())    // Check Serial Data Available
