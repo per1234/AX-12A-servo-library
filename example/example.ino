@@ -1,3 +1,7 @@
+/*
+ * Example of a simple Blink using the AX-12A built-in LED
+ */
+
 #include "DynamixelSerial.h"
 #include "Arduino.h"
 
