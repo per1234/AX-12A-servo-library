@@ -6,6 +6,9 @@
 
 #include "DynamixelSerial.h"
 
+
+// Macros /////////////////////////////////////////////////////////////////////
+
 #define sendData(args)  (varSerial->write(args))    // Write Over Serial
 #define availableData() (varSerial->available())    // Check Serial Data Available
 #define readData()      (varSerial->read())         // Read Serial Data
@@ -18,14 +21,7 @@
 
 #define delayus(args) (delayMicroseconds(args))  // Delay Microseconds
 
-unsigned char Test_Pin = 3; 
-unsigned char Error_Pin = 5;
-
-unsigned long time = 0;
-unsigned long timeStart = 0;
-unsigned long timeStop = 0;
-
-// Private Methods //////////////////////////////////////////////////////////////
+// Private Methods ////////////////////////////////////////////////////////////
 
 int DynamixelClass::read_error(void)
 {
@@ -50,30 +46,15 @@ int DynamixelClass::read_error(void)
 	return (-1);											 // No Ax Response
 }
 
-// Public Methods //////////////////////////////////////////////////////////////
-
+// Public Methods /////////////////////////////////////////////////////////////
 
 void DynamixelClass::begin(long baud, unsigned char directionPin, HardwareSerial *srl)
 {
 	varSerial = srl;
 	Direction_Pin = directionPin;
 	setDPin(Direction_Pin, OUTPUT);
-	setDPin(Test_Pin, OUTPUT);
-	setDPin(Error_Pin, OUTPUT);
 	beginCom(baud);
 }
-
-//void DynamixelClass::begin(long baud, unsigned char directionPin)
-//{
-//	Direction_Pin = directionPin;
-//	setDPin(Direction_Pin, OUTPUT);
-//	beginCom(baud);
-//}
-
-void DynamixelClass::begin(long baud)
-{	
-	beginCom(baud);
-}	
 
 void DynamixelClass::end()
 {
