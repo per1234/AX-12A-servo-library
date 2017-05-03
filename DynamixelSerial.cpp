@@ -378,33 +378,28 @@ int DynamixelClass::torqueStatus( unsigned char ID, bool Status)
 
 int DynamixelClass::ledStatus(unsigned char ID, bool Status)
 {    
-    Checksum = (~(ID + AX_LED_LENGTH + AX_WRITE_DATA + AX_LED + Status))&0xFF;
+	const unsigned int length = 8;
+	byte packet[length];
 
-	switchCom(Direction_Pin, Tx_MODE);
-	//switchCom(Test_Pin, 1);
+	byte Checksum = (~(ID + AX_LED_LENGTH + AX_WRITE_DATA + AX_LED + Status)) & 0xFF;
 
-	timeStart = micros();
+	packet[0] = AX_START;
+	packet[1] = AX_START;
+	packet[2] = ID;
+	packet[3] = AX_LED_LENGTH;
+	packet[4] = AX_WRITE_DATA;
+	packet[5] = AX_LED;
+	packet[6] = Status;
+	packet[7] = Checksum;
 
-    sendData(AX_START);              // Send Instructions over Serial
-    sendData(AX_START);
-    sendData(ID);
-    sendData(AX_LED_LENGTH);
-    sendData(AX_WRITE_DATA);
-    sendData(AX_LED);
-    sendData(Status);
-    sendData(Checksum);
+	switchCom(Direction_Pin, Tx_MODE); 	// Switch to Transmission  Mode
 
-	//switchCom(Test_Pin, 0);
-	timeStop = micros();
-    delayus(TX_DELAY_TIME);
+	Serial.write(packet, length);
+	Serial.flush(); 					// Wait until buffer is empty
 	
-	switchCom(Direction_Pin,Rx_MODE);
-
-	//time = timeStop - timeStart;
+	switchCom(Direction_Pin, Rx_MODE); 	// Switch back to Reception Mode
 	
-
 	return (read_error());              // Return the read error
-	//return (time);              // Return the read error
 }
 
 int DynamixelClass::readTemperature(unsigned char ID)
