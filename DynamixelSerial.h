@@ -124,7 +124,7 @@
 class DynamixelClass {
 private:
 	
-	unsigned char Checksum; 
+	unsigned char Checksum; //TODO : Try with Byte
 	unsigned char Direction_Pin;
 	unsigned char Time_Counter;
 	unsigned char Incoming_Byte;               

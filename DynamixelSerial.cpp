@@ -6,7 +6,6 @@
 
 #include "DynamixelSerial.h"
 
-
 // Macros /////////////////////////////////////////////////////////////////////
 
 #define sendData(args)  (varSerial->write(args))    // Write Over Serial
@@ -139,22 +138,32 @@ int DynamixelClass::move(unsigned char ID, int Position)
     char Position_H,Position_L;
     Position_H = Position >> 8;           // 16 bits - 2 x 8 bits variables
     Position_L = Position;
-	Checksum = (~(ID + AX_GOAL_LENGTH + AX_WRITE_DATA + AX_GOAL_POSITION_L + Position_L + Position_H))&0xFF;
+
+    const unsigned int length = 9;
+    byte packet[length];
+
+	byte Checksum = (~(ID + AX_GOAL_LENGTH + AX_WRITE_DATA + AX_GOAL_POSITION_L + Position_L + Position_H)) & 0xFF;
     
 	switchCom(Direction_Pin,Tx_MODE);
-    sendData(AX_START);                 // Send Instructions over Serial
-    sendData(AX_START);
-    sendData(ID);
-    sendData(AX_GOAL_LENGTH);
-    sendData(AX_WRITE_DATA);
-    sendData(AX_GOAL_POSITION_L);
-    sendData(Position_L);
-    sendData(Position_H);
-    sendData(Checksum);
-	delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,Rx_MODE);
 
-    return (read_error());                 // Return the read error
+    packet[0] = AX_START;
+    packet[1] = AX_START;
+    packet[2] = ID;
+    packet[3] = AX_GOAL_LENGTH;
+    packet[4] = AX_WRITE_DATA;
+    packet[5] = AX_GOAL_POSITION_L;
+    packet[6] = Position_L;
+    packet[7] = Position_H;
+    packet[8] = Checksum;
+
+    switchCom(Direction_Pin, Tx_MODE); 	// Switch to Transmission  Mode
+
+    Serial.write(packet, length);
+    Serial.flush(); 					// Wait until buffer is empty
+
+    switchCom(Direction_Pin, Rx_MODE); 	// Switch back to Reception Mode
+
+    return (read_error());              // Return the read error
 }
 
 int DynamixelClass::moveSpeed(unsigned char ID, int Position, int Speed)
