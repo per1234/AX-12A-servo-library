@@ -285,22 +285,23 @@ int DynamixelClass::moveRW(unsigned char ID, int Position)
     char Position_H,Position_L;
     Position_H = Position >> 8;           // 16 bits - 2 x 8 bits variables
     Position_L = Position;
-    Checksum = (~(ID + AX_GOAL_LENGTH + AX_REG_WRITE + AX_GOAL_POSITION_L + Position_L + Position_H))&0xFF;
 
-	switchCom(Direction_Pin,TX_MODE);
-    sendData(AX_START);                 // Send Instructions over Serial
-    sendData(AX_START);
-    sendData(ID);
-    sendData(AX_GOAL_LENGTH);
-    sendData(AX_REG_WRITE);
-    sendData(AX_GOAL_POSITION_L);
-    sendData(Position_L);
-    sendData(Position_H);
-    sendData(Checksum);
-	delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
+	const unsigned int length = 9;
+	byte packet[length];
+
+    Checksum = (~(ID + AX_GOAL_LENGTH + AX_REG_WRITE + AX_GOAL_POSITION_L + Position_L + Position_H)) & 0xFF;
+
+    packet[0] = AX_START;
+    packet[1] = AX_START;
+    packet[2] = ID;
+    packet[3] = AX_GOAL_LENGTH;
+    packet[4] = AX_REG_WRITE;
+    packet[5] = AX_GOAL_POSITION_L;
+    packet[6] = Position_L;
+    packet[7] = Position_H;
+    packet[8] = Checksum;
 	
-    return (read_error());                 // Return the read error
+    return (sendPacket(packet, length));
 }
 
 int DynamixelClass::moveSpeedRW(unsigned char ID, int Position, int Speed)
@@ -310,24 +311,25 @@ int DynamixelClass::moveSpeedRW(unsigned char ID, int Position, int Speed)
     Position_L = Position;                // 16 bits - 2 x 8 bits variables
     Speed_H = Speed >> 8;
     Speed_L = Speed;                      // 16 bits - 2 x 8 bits variables
-    Checksum = (~(ID + AX_GOAL_SP_LENGTH + AX_REG_WRITE + AX_GOAL_POSITION_L + Position_L + Position_H + Speed_L + Speed_H))&0xFF;
+
+	const unsigned int length = 11;
+	byte packet[length];
+
+    Checksum = (~(ID + AX_GOAL_SP_LENGTH + AX_REG_WRITE + AX_GOAL_POSITION_L + Position_L + Position_H + Speed_L + Speed_H)) & 0xFF;
+
+    packet[0] = AX_START;
+    packet[1] = AX_START;
+    packet[2] = ID;
+    packet[3] = AX_GOAL_SP_LENGTH;
+    packet[4] = AX_REG_WRITE;
+    packet[5] = AX_GOAL_POSITION_L;
+    packet[6] = Position_L;
+    packet[7] = Position_H;
+    packet[8] = Speed_L;
+    packet[9] = Speed_H;
+    packet[10] = Checksum;
 	
-	switchCom(Direction_Pin,TX_MODE);
-    sendData(AX_START);                // Send Instructions over Serial
-    sendData(AX_START);
-    sendData(ID);
-    sendData(AX_GOAL_SP_LENGTH);
-    sendData(AX_REG_WRITE);
-    sendData(AX_GOAL_POSITION_L);
-    sendData(Position_L);
-    sendData(Position_H);
-    sendData(Speed_L);
-    sendData(Speed_H);
-    sendData(Checksum);
-    delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
-    
-    return (read_error());               // Return the read error
+    return (sendPacket(packet, length));
 }
 
 void DynamixelClass::action()
@@ -347,21 +349,21 @@ void DynamixelClass::action()
 
 int DynamixelClass::torqueStatus( unsigned char ID, bool Status)
 {
-    Checksum = (~(ID + AX_TORQUE_LENGTH + AX_WRITE_DATA + AX_TORQUE_ENABLE + Status))&0xFF;
+	const unsigned int length = 8;
+	byte packet[length];
 
-	switchCom(Direction_Pin,TX_MODE);
-    sendData(AX_START);              // Send Instructions over Serial
-    sendData(AX_START);
-    sendData(ID);
-    sendData(AX_TORQUE_LENGTH);
-    sendData(AX_WRITE_DATA);
-    sendData(AX_TORQUE_ENABLE);
-    sendData(Status);
-    sendData(Checksum);
-    delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
+	Checksum = (~(ID + AX_TORQUE_LENGTH + AX_WRITE_DATA + AX_TORQUE_ENABLE + Status)) & 0xFF;
+
+    packet[0] = AX_START;
+    packet[1] = AX_START;
+    packet[2] = ID;
+    packet[3] = AX_TORQUE_LENGTH;
+    packet[4] = AX_WRITE_DATA;
+    packet[5] = AX_TORQUE_ENABLE;
+    packet[6] = Status;
+    packet[7] = Checksum;
     
-    return (read_error());              // Return the read error
+    return (sendPacket(packet, length));
 }
 
 int DynamixelClass::ledStatus(unsigned char ID, bool Status)

@@ -1,3 +1,7 @@
+/*
+ * Example showing how to use endless mode (wheel mode) on AX-12A
+ * Be sure you removed all mechanical assemblies (hinges) before using this code !
+ */
 #include "DynamixelSerial.h"
 #include "Arduino.h"
 
