@@ -19,3 +19,6 @@
 /.cproject
 /.settings/language.settings.xml
 /.settings/org.eclipse.cdt.core.prefs
+/nRF52_OpenOCD.launch
+/nRF52_GDB.launch
+/AX_12A_servo_library.ino

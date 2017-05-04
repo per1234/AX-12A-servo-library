@@ -195,6 +195,7 @@ public:
 	int ledStatus(unsigned char ID, bool Status);
 
 	int sendPacket(byte *packet, unsigned int length);
+	void sendPacketNoError(byte *packet, unsigned int length);
 };
 
 extern DynamixelClass Dynamixel;

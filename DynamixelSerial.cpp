@@ -401,7 +401,7 @@ int DynamixelClass::readTemperature(unsigned char ID)
 	packet[6] = AX_BYTE_READ;
 	packet[7] = Checksum;
 
-	sendPacket(packet, length);
+	sendPacketNoError(packet, length);
 	
     Temperature_Byte = -1;
     Time_Counter = 0;
@@ -443,7 +443,7 @@ int DynamixelClass::readPosition(unsigned char ID)
 	packet[6] = AX_BYTE_READ_POS;
 	packet[7] = Checksum;
 
-	sendPacket(packet, length);
+	sendPacketNoError(packet, length);
 	
     Position_Long_Byte = -1;
 	Time_Counter = 0;
@@ -489,7 +489,7 @@ int DynamixelClass::readVoltage(unsigned char ID)
 	packet[6] = AX_BYTE_READ;
 	packet[7] = Checksum;
 
-    sendPacket(packet, length);
+    sendPacketNoError(packet, length);
 	
     Voltage_Byte = -1;
 	Time_Counter = 0;
@@ -765,6 +765,8 @@ int DynamixelClass::moving(unsigned char ID)
 	packet[6] = AX_BYTE_READ;
 	packet[7] = Checksum;
 	
+	sendPacketNoError(packet, length);
+
     Moving_Byte = -1;
     Time_Counter = 0;
     while((availableData() < 6) & (Time_Counter < TIME_OUT))
@@ -778,15 +780,15 @@ int DynamixelClass::moving(unsigned char ID)
 		Incoming_Byte = readData();
 		if ( (Incoming_Byte == 255) & (peekData() == 255) )
 		{
-			readData();                            // Start Bytes
-			readData();                            // Ax-12 ID
-			readData();                            // Length
-			if( (Error_Byte = readData()) != 0 )   // Error
+			readData();                           	// Start Bytes
+			readData();                           	// Ax-12 ID
+			readData();                           	// Length
+			if( (Error_Byte = readData()) != 0 )   	// Error
 				return (Error_Byte*(-1));
-			Moving_Byte = readData();         // Temperature
+			Moving_Byte = readData();         		// Moving
 		}
     }
-	return (Moving_Byte);               // Returns the read temperature
+	return (Moving_Byte);              				// Returns the read Moving
 }
 
 int DynamixelClass::lockRegister(unsigned char ID)
@@ -824,6 +826,8 @@ int DynamixelClass::RWStatus(unsigned char ID)
 	packet[6] = AX_BYTE_READ;
 	packet[7] = Checksum;
 	
+	sendPacketNoError(packet, length);
+
     RWS_Byte = -1;
     Time_Counter = 0;
     while((availableData() < 6) & (Time_Counter < TIME_OUT))
@@ -837,15 +841,15 @@ int DynamixelClass::RWStatus(unsigned char ID)
 		Incoming_Byte = readData();
 		if ( (Incoming_Byte == 255) & (peekData() == 255) )
 		{
-			readData();                            // Start Bytes
-			readData();                            // Ax-12 ID
-			readData();                            // Length
-			if( (Error_Byte = readData()) != 0 )   // Error
+			readData();                            	// Start Bytes
+			readData();                            	// Ax-12 ID
+			readData();                            	// Length
+			if( (Error_Byte = readData()) != 0 )   	// Error
 				return (Error_Byte*(-1));
-			RWS_Byte = readData();         // Temperature
+			RWS_Byte = readData();         			// RWStatus
 		}
     }
-	return (RWS_Byte);               // Returns the read temperature
+	return (RWS_Byte);               				// Returns the read RWStatus
 }
 
 int DynamixelClass::readSpeed(unsigned char ID)
@@ -864,6 +868,8 @@ int DynamixelClass::readSpeed(unsigned char ID)
 	packet[6] = AX_BYTE_READ_POS;
 	packet[7] = Checksum;
 	
+	sendPacketNoError(packet, length);
+
     Speed_Long_Byte = -1;
 	Time_Counter = 0;
     while((availableData() < 7) & (Time_Counter < TIME_OUT))
@@ -898,15 +904,6 @@ int DynamixelClass::readLoad(unsigned char ID)
 	byte packet[length];
 
 	Checksum = (~(ID + AX_POS_LENGTH + AX_READ_DATA + AX_PRESENT_LOAD_L + AX_BYTE_READ_POS)) & 0xFF;
-	
-    sendData(AX_START);
-    sendData(AX_START);
-    sendData(ID);
-    sendData(AX_POS_LENGTH);
-    sendData(AX_READ_DATA);
-    sendData(AX_PRESENT_LOAD_L);
-    sendData(AX_BYTE_READ_POS);
-    sendData(Checksum);
 
 	packet[0] = AX_START;
 	packet[1] = AX_START;
@@ -917,6 +914,8 @@ int DynamixelClass::readLoad(unsigned char ID)
 	packet[6] = AX_BYTE_READ_POS;
 	packet[7] = Checksum;
 	
+	sendPacketNoError(packet, length);
+
     Load_Long_Byte = -1;
 	Time_Counter = 0;
     while((availableData() < 7) & (Time_Counter < TIME_OUT))
@@ -957,4 +956,13 @@ int DynamixelClass::sendPacket(byte* packet, unsigned int length)
 	return (read_error());              // Return the read error
 }
 
+void DynamixelClass::sendPacketNoError(byte* packet, unsigned int length)
+{
+	switchCom(Direction_Pin, TX_MODE); 	// Switch to Transmission  Mode
+
+	Serial.write(packet, length);		// Send data through sending buffer
+	Serial.flush(); 					// Wait until buffer is empty
+
+	switchCom(Direction_Pin, RX_MODE); 	// Switch back to Reception Mode
+}
 DynamixelClass Dynamixel;
