@@ -13,6 +13,7 @@
 /Release/AX_12A_servo_library.map
 /Release/DynamixelSerial.cpp.d
 /Release/DynamixelSerial.cpp.o
+/Release/.gitignore
 /.ino.cpp
 /.project
 /.cproject
