@@ -4,8 +4,8 @@
  *
  */
 
-#ifndef DynamixelSerialMathieu_h
-#define DynamixelSerialMathieu_h
+#ifndef DynamixelSerial_h
+#define DynamixelSerial_h
 
 	// EEPROM AREA  ///////////////////////////////////////////////////////////
 #define AX_MODEL_NUMBER_L           0
@@ -79,7 +79,7 @@
 #define OFF                         0
 #define ON                          1
 #define LEFT						0
-#define RIGTH                       1
+#define RIGHT                       1
 #define AX_BYTE_READ                1
 #define AX_BYTE_READ_POS            2
 #define AX_RESET_LENGTH				2
@@ -115,8 +115,8 @@
 #define AX_CCW_AL_H                 3
 #define TIME_OUT                    10  //TODO : needed ?
 #define TX_DELAY_TIME				180 //TODO : needed ?
-#define Tx_MODE                     1
-#define Rx_MODE                     0
+#define TX_MODE                     1
+#define RX_MODE                     0
 #define LOCK                        1
 
 #include <inttypes.h>
