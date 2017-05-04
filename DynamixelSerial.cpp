@@ -387,30 +387,35 @@ int DynamixelClass::ledStatus(unsigned char ID, bool Status)
 
 int DynamixelClass::readTemperature(unsigned char ID)
 {	
-    Checksum = (~(ID + AX_TEM_LENGTH  + AX_READ_DATA + AX_PRESENT_TEMPERATURE + AX_BYTE_READ))&0xFF;
-    
-	switchCom(Direction_Pin,TX_MODE);
-    sendData(AX_START);
-    sendData(AX_START);
-    sendData(ID);
-    sendData(AX_TEM_LENGTH);
-    sendData(AX_READ_DATA);
-    sendData(AX_PRESENT_TEMPERATURE);
-    sendData(AX_BYTE_READ);
-    sendData(Checksum);
-    delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
+	const unsigned int length = 8;
+	byte packet[length];
+
+    Checksum = (~(ID + AX_TEM_LENGTH + AX_READ_DATA + AX_PRESENT_TEMPERATURE + AX_BYTE_READ)) & 0xFF;
+
+	packet[0] = AX_START;
+	packet[1] = AX_START;
+	packet[2] = ID;
+	packet[3] = AX_TEM_LENGTH;
+	packet[4] = AX_READ_DATA;
+	packet[5] = AX_PRESENT_TEMPERATURE;
+	packet[6] = AX_BYTE_READ;
+	packet[7] = Checksum;
+
+	sendPacket(packet, length);
 	
     Temperature_Byte = -1;
     Time_Counter = 0;
-    while((availableData() < 6) & (Time_Counter < TIME_OUT)){
+    while((availableData() < 6) & (Time_Counter < TIME_OUT))
+    {
 		Time_Counter++;
 		delayus(1000);
     }
 	
-    while (availableData() > 0){
+    while (availableData() > 0)
+    {
 		Incoming_Byte = readData();
-		if ( (Incoming_Byte == 255) & (peekData() == 255) ){
+		if ( (Incoming_Byte == 255) & (peekData() == 255) )
+		{
 			readData();                            // Start Bytes
 			readData();                            // Ax-12 ID
 			readData();                            // Length
@@ -424,30 +429,35 @@ int DynamixelClass::readTemperature(unsigned char ID)
 
 int DynamixelClass::readPosition(unsigned char ID)
 {	
-    Checksum = (~(ID + AX_POS_LENGTH  + AX_READ_DATA + AX_PRESENT_POSITION_L + AX_BYTE_READ_POS))&0xFF;
-  
-	switchCom(Direction_Pin,TX_MODE);
-    sendData(AX_START);
-    sendData(AX_START);
-    sendData(ID);
-    sendData(AX_POS_LENGTH);
-    sendData(AX_READ_DATA);
-    sendData(AX_PRESENT_POSITION_L);
-    sendData(AX_BYTE_READ_POS);
-    sendData(Checksum);
-    delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
+	const unsigned int length = 8;
+	byte packet[length];
+
+    Checksum = (~(ID + AX_POS_LENGTH + AX_READ_DATA + AX_PRESENT_POSITION_L + AX_BYTE_READ_POS)) & 0xFF;
+
+	packet[0] = AX_START;
+	packet[1] = AX_START;
+	packet[2] = ID;
+	packet[3] = AX_POS_LENGTH;
+	packet[4] = AX_READ_DATA;
+	packet[5] = AX_PRESENT_POSITION_L;
+	packet[6] = AX_BYTE_READ_POS;
+	packet[7] = Checksum;
+
+	sendPacket(packet, length);
 	
     Position_Long_Byte = -1;
 	Time_Counter = 0;
-    while((availableData() < 7) & (Time_Counter < TIME_OUT)){
+    while((availableData() < 7) & (Time_Counter < TIME_OUT))
+    {
 		Time_Counter++;
 		delayus(1000);
     }
 	
-    while (availableData() > 0){
+    while (availableData() > 0)
+    {
 		Incoming_Byte = readData();
-		if ( (Incoming_Byte == 255) & (peekData() == 255) ){
+		if ( (Incoming_Byte == 255) & (peekData() == 255) )
+		{
 			readData();                            // Start Bytes
 			readData();                            // Ax-12 ID
 			readData();                            // Length
@@ -465,30 +475,35 @@ int DynamixelClass::readPosition(unsigned char ID)
 
 int DynamixelClass::readVoltage(unsigned char ID)
 {    
-    Checksum = (~(ID + AX_VOLT_LENGTH  + AX_READ_DATA + AX_PRESENT_VOLTAGE + AX_BYTE_READ))&0xFF;
-    
-	switchCom(Direction_Pin,TX_MODE);
-    sendData(AX_START);
-    sendData(AX_START);
-    sendData(ID);
-    sendData(AX_VOLT_LENGTH);
-    sendData(AX_READ_DATA);
-    sendData(AX_PRESENT_VOLTAGE);
-    sendData(AX_BYTE_READ);
-    sendData(Checksum);
-	delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
+	const unsigned int length = 8;
+	byte packet[length];
+
+    Checksum = (~(ID + AX_VOLT_LENGTH + AX_READ_DATA + AX_PRESENT_VOLTAGE + AX_BYTE_READ)) & 0xFF;
+
+	packet[0] = AX_START;
+	packet[1] = AX_START;
+	packet[2] = ID;
+	packet[3] = AX_VOLT_LENGTH;
+	packet[4] = AX_READ_DATA;
+	packet[5] = AX_PRESENT_VOLTAGE;
+	packet[6] = AX_BYTE_READ;
+	packet[7] = Checksum;
+
+    sendPacket(packet, length);
 	
     Voltage_Byte = -1;
 	Time_Counter = 0;
-    while((availableData() < 6) & (Time_Counter < TIME_OUT)){
+    while((availableData() < 6) & (Time_Counter < TIME_OUT))
+    {
 		Time_Counter++;
 		delayus(1000);
     }
 	
-    while (availableData() > 0){
+    while (availableData() > 0)
+    {
 		Incoming_Byte = readData();
-		if ( (Incoming_Byte == 255) & (peekData() == 255) ){
+		if ( (Incoming_Byte == 255) & (peekData() == 255) )
+		{
 			readData();                            // Start Bytes
 			readData();                            // Ax-12 ID
 			readData();                            // Length
@@ -502,41 +517,41 @@ int DynamixelClass::readVoltage(unsigned char ID)
 
 int DynamixelClass::setTempLimit(unsigned char ID, unsigned char Temperature)
 {
-	Checksum = (~(ID + AX_TL_LENGTH +AX_WRITE_DATA+ AX_LIMIT_TEMPERATURE + Temperature))&0xFF;
+	const unsigned int length = 8;
+	byte packet[length];
+
+	Checksum = (~(ID + AX_TL_LENGTH + AX_WRITE_DATA + AX_LIMIT_TEMPERATURE + Temperature)) & 0xFF;
 	
-	switchCom(Direction_Pin,TX_MODE);
-	sendData(AX_START);                     
-	sendData(AX_START);
-	sendData(ID);
-	sendData(AX_TL_LENGTH);
-	sendData(AX_WRITE_DATA);
-	sendData(AX_LIMIT_TEMPERATURE);
-    sendData(Temperature);
-	sendData(Checksum);
-	delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
+	packet[0] = AX_START;
+	packet[1] = AX_START;
+	packet[2] = ID;
+	packet[3] = AX_TL_LENGTH;
+	packet[4] = AX_WRITE_DATA;
+	packet[5] = AX_LIMIT_TEMPERATURE;
+	packet[6] = Temperature;
+	packet[7] = Checksum;
 	
-    return (read_error()); 
+	return (sendPacket(packet, length));
 }
 
 int DynamixelClass::setVoltageLimit(unsigned char ID, unsigned char DVoltage, unsigned char UVoltage)
 {
-	Checksum = (~(ID + AX_VL_LENGTH +AX_WRITE_DATA+ AX_DOWN_LIMIT_VOLTAGE + DVoltage + UVoltage))&0xFF;
+	const unsigned int length = 9;
+	byte packet[length];
+
+	Checksum = (~(ID + AX_VL_LENGTH + AX_WRITE_DATA + AX_DOWN_LIMIT_VOLTAGE + DVoltage + UVoltage)) & 0xFF;
 	
-	switchCom(Direction_Pin,TX_MODE);
-	sendData(AX_START);                     
-	sendData(AX_START);
-	sendData(ID);
-	sendData(AX_VL_LENGTH);
-	sendData(AX_WRITE_DATA);
-	sendData(AX_DOWN_LIMIT_VOLTAGE);
-    sendData(DVoltage);
-    sendData(UVoltage);
-	sendData(Checksum);
-	delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
+	packet[0] = AX_START;
+	packet[1] = AX_START;
+	packet[2] = ID;
+	packet[3] = AX_VL_LENGTH;
+	packet[4] = AX_WRITE_DATA;
+	packet[5] = AX_DOWN_LIMIT_VOLTAGE;
+	packet[6] = DVoltage;
+	packet[7] = UVoltage;
+	packet[8] = Checksum;
 	
-    return (read_error()); 
+	return (sendPacket(packet, length));
 }
 
 int DynamixelClass::setAngleLimit(unsigned char ID, int CWLimit, int CCWLimit)
@@ -546,25 +561,26 @@ int DynamixelClass::setAngleLimit(unsigned char ID, int CWLimit, int CCWLimit)
     CW_L = CWLimit;                // 16 bits - 2 x 8 bits variables
     CCW_H = CCWLimit >> 8;
     CCW_L = CCWLimit;  
-	Checksum = (~(ID + AX_VL_LENGTH +AX_WRITE_DATA+ AX_CW_ANGLE_LIMIT_L + CW_H + CW_L + AX_CCW_ANGLE_LIMIT_L + CCW_H + CCW_L))&0xFF;
+
+	const unsigned int length = 12;
+	byte packet[length];
 	
-	switchCom(Direction_Pin,TX_MODE);
-	sendData(AX_START);                     
-	sendData(AX_START);
-	sendData(ID);
-	sendData(AX_CCW_CW_LENGTH);
-	sendData(AX_WRITE_DATA);
-	sendData(AX_CW_ANGLE_LIMIT_L);
-    sendData(CW_L);
-	sendData(CW_H);
-	sendData(AX_CCW_ANGLE_LIMIT_L);
-    sendData(CCW_L);
-	sendData(CCW_H);
-	sendData(Checksum);
-	delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
+	Checksum = (~(ID + AX_VL_LENGTH + AX_WRITE_DATA + AX_CW_ANGLE_LIMIT_L + CW_H + CW_L + AX_CCW_ANGLE_LIMIT_L + CCW_H + CCW_L)) & 0xFF;
 	
-    return (read_error()); 
+	packet[0] = AX_START;
+	packet[1] = AX_START;
+	packet[2] = ID;
+	packet[3] = AX_CCW_CW_LENGTH;
+	packet[4] = AX_WRITE_DATA;
+	packet[5] = AX_CW_ANGLE_LIMIT_L;
+	packet[6] = CW_L;
+	packet[7] = CW_H;
+	packet[8] = AX_CCW_ANGLE_LIMIT_L;
+	packet[9] = CCW_L;
+	packet[10] = CCW_H;
+	packet[11] = Checksum;
+
+	return (sendPacket(packet, length));
 }
 
 int DynamixelClass::setMaxTorque(unsigned char ID, int MaxTorque)
@@ -572,140 +588,141 @@ int DynamixelClass::setMaxTorque(unsigned char ID, int MaxTorque)
     char MaxTorque_H,MaxTorque_L;
     MaxTorque_H = MaxTorque >> 8;           // 16 bits - 2 x 8 bits variables
     MaxTorque_L = MaxTorque;
-	Checksum = (~(ID + AX_MT_LENGTH + AX_WRITE_DATA + AX_MAX_TORQUE_L + MaxTorque_L + MaxTorque_H))&0xFF;
     
-	switchCom(Direction_Pin,TX_MODE);
-    sendData(AX_START);                 // Send Instructions over Serial
-    sendData(AX_START);
-    sendData(ID);
-    sendData(AX_MT_LENGTH);
-    sendData(AX_WRITE_DATA);
-    sendData(AX_MAX_TORQUE_L);
-    sendData(MaxTorque_L);
-    sendData(MaxTorque_H);
-    sendData(Checksum);
-	delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
+	const unsigned int length = 9;
+	byte packet[length];
+
+	Checksum = (~(ID + AX_MT_LENGTH + AX_WRITE_DATA + AX_MAX_TORQUE_L + MaxTorque_L + MaxTorque_H)) & 0xFF;
+
+	packet[0] = AX_START;
+	packet[1] = AX_START;
+	packet[2] = ID;
+	packet[3] = AX_MT_LENGTH;
+	packet[4] = AX_WRITE_DATA;
+	packet[5] = AX_MAX_TORQUE_L;
+	packet[6] = MaxTorque_L;
+	packet[7] = MaxTorque_H;
+	packet[8] = Checksum;
 	
-    return (read_error());                 // Return the read error
+	return (sendPacket(packet, length));
 }
 
 int DynamixelClass::setSRL(unsigned char ID, unsigned char SRL)
 {    
-	Checksum = (~(ID + AX_SRL_LENGTH + AX_WRITE_DATA + AX_RETURN_LEVEL + SRL))&0xFF;
+	const unsigned int length = 8;
+	byte packet[length];
+
+	Checksum = (~(ID + AX_SRL_LENGTH + AX_WRITE_DATA + AX_RETURN_LEVEL + SRL)) & 0xFF;
+
+	packet[0] = AX_START;
+	packet[1] = AX_START;
+	packet[2] = ID;
+	packet[3] = AX_SRL_LENGTH;
+	packet[4] = AX_WRITE_DATA;
+	packet[5] = AX_RETURN_LEVEL;
+	packet[6] = SRL;
+	packet[7] = Checksum;
 	
-	switchCom(Direction_Pin,TX_MODE);
-    sendData(AX_START);                // Send Instructions over Serial
-    sendData(AX_START);
-    sendData(ID);
-	sendData(AX_SRL_LENGTH);
-    sendData(AX_WRITE_DATA);
-    sendData(AX_RETURN_LEVEL);
-    sendData(SRL);
-    sendData(Checksum);
-	delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
-    
-    return (read_error());                // Return the read error
+	return (sendPacket(packet, length));
 }
 
 int DynamixelClass::setRDT(unsigned char ID, unsigned char RDT)
 {    
-	Checksum = (~(ID + AX_RDT_LENGTH + AX_WRITE_DATA + AX_RETURN_DELAY_TIME + (RDT/2)))&0xFF;
+	const unsigned int length = 8;
+	byte packet[length];
 	
-	switchCom(Direction_Pin,TX_MODE);
-    sendData(AX_START);                // Send Instructions over Serial
-    sendData(AX_START);
-    sendData(ID);
-	sendData(AX_RDT_LENGTH);
-    sendData(AX_WRITE_DATA);
-    sendData(AX_RETURN_DELAY_TIME);
-    sendData((RDT/2));
-    sendData(Checksum);
-	delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
+	Checksum = (~(ID + AX_RDT_LENGTH + AX_WRITE_DATA + AX_RETURN_DELAY_TIME + (RDT / 2))) & 0xFF;
+
+	packet[0] = AX_START;
+	packet[1] = AX_START;
+	packet[2] = ID;
+	packet[3] = AX_RDT_LENGTH;
+	packet[4] = AX_WRITE_DATA;
+	packet[5] = AX_RETURN_DELAY_TIME;
+	packet[6] = (RDT/2);
+	packet[7] = Checksum;
     
-    return (read_error());                // Return the read error
+	return (sendPacket(packet, length));
 }
 
 int DynamixelClass::setLEDAlarm(unsigned char ID, unsigned char LEDAlarm)
 {    
-	Checksum = (~(ID + AX_LEDALARM_LENGTH + AX_WRITE_DATA + AX_ALARM_LED + LEDAlarm))&0xFF;
+	const unsigned int length = 8;
+	byte packet[length];
+
+	Checksum = (~(ID + AX_LEDALARM_LENGTH + AX_WRITE_DATA + AX_ALARM_LED + LEDAlarm)) & 0xFF;
+
+	packet[0] = AX_START;
+	packet[1] = AX_START;
+	packet[2] = ID;
+	packet[3] = AX_LEDALARM_LENGTH;
+	packet[4] = AX_WRITE_DATA;
+	packet[5] = AX_ALARM_LED;
+	packet[6] = LEDAlarm;
+	packet[7] = Checksum;
 	
-	switchCom(Direction_Pin,TX_MODE);
-    sendData(AX_START);                // Send Instructions over Serial
-    sendData(AX_START);
-    sendData(ID);
-	sendData(AX_LEDALARM_LENGTH);
-    sendData(AX_WRITE_DATA);
-    sendData(AX_ALARM_LED);
-    sendData(LEDAlarm);
-    sendData(Checksum);
-	delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
-    
-    return (read_error());                // Return the read error
+	return (sendPacket(packet, length));
 }
 
 int DynamixelClass::setShutdownAlarm(unsigned char ID, unsigned char SALARM)
 {    
-	Checksum = (~(ID + AX_SALARM_LENGTH + AX_ALARM_SHUTDOWN + AX_ALARM_LED + SALARM))&0xFF;
+	const unsigned int length = 8;
+	byte packet[length];
 	
-	switchCom(Direction_Pin,TX_MODE);
-    sendData(AX_START);                // Send Instructions over Serial
-    sendData(AX_START);
-    sendData(ID);
-	sendData(AX_SALARM_LENGTH);
-    sendData(AX_WRITE_DATA);
-    sendData(AX_ALARM_SHUTDOWN);
-    sendData(SALARM);
-    sendData(Checksum);
-	delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
+	Checksum = (~(ID + AX_SALARM_LENGTH + AX_ALARM_SHUTDOWN + AX_ALARM_LED + SALARM)) & 0xFF;
+
+	packet[0] = AX_START;
+	packet[1] = AX_START;
+	packet[2] = ID;
+	packet[3] = AX_SALARM_LENGTH;
+	packet[4] = AX_WRITE_DATA;
+	packet[5] = AX_ALARM_SHUTDOWN;
+	packet[6] = SALARM;
+	packet[7] = Checksum;
     
-    return (read_error());                // Return the read error
+	return (sendPacket(packet, length));
 }
 
 int DynamixelClass::setCMargin(unsigned char ID, unsigned char CWCMargin, unsigned char CCWCMargin)
 {
-	Checksum = (~(ID + AX_CM_LENGTH +AX_WRITE_DATA+ AX_CW_COMPLIANCE_MARGIN + CWCMargin + AX_CCW_COMPLIANCE_MARGIN + CCWCMargin))&0xFF;
+	const unsigned int length = 10;
+	byte packet[length];
+
+	Checksum = (~(ID + AX_CM_LENGTH + AX_WRITE_DATA + AX_CW_COMPLIANCE_MARGIN + CWCMargin + AX_CCW_COMPLIANCE_MARGIN + CCWCMargin)) & 0xFF;
 	
-	switchCom(Direction_Pin,TX_MODE);
-	sendData(AX_START);                     
-	sendData(AX_START);
-	sendData(ID);
-	sendData(AX_CM_LENGTH);
-	sendData(AX_WRITE_DATA);
-	sendData(AX_CW_COMPLIANCE_MARGIN);
-    sendData(CWCMargin);
-	sendData(AX_CCW_COMPLIANCE_MARGIN);
-    sendData(CCWCMargin);
-	sendData(Checksum);
-	delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
+	packet[0] = AX_START;
+	packet[1] = AX_START;
+	packet[2] = ID;
+	packet[3] = AX_CM_LENGTH;
+	packet[4] = AX_WRITE_DATA;
+	packet[5] = AX_CW_COMPLIANCE_MARGIN;
+	packet[6] = CWCMargin;
+	packet[7] = AX_CCW_COMPLIANCE_MARGIN;
+	packet[8] = CCWCMargin;
+	packet[9] = Checksum;
 	
-    return (read_error()); 
+	return (sendPacket(packet, length));
 }
 
 int DynamixelClass::setCSlope(unsigned char ID, unsigned char CWCSlope, unsigned char CCWCSlope)
 {
-	Checksum = (~(ID + AX_CS_LENGTH +AX_WRITE_DATA+ AX_CW_COMPLIANCE_SLOPE + CWCSlope + AX_CCW_COMPLIANCE_SLOPE + CCWCSlope))&0xFF;
+	const unsigned int length = 10;
+	byte packet[length];
+
+	Checksum = (~(ID + AX_CS_LENGTH + AX_WRITE_DATA + AX_CW_COMPLIANCE_SLOPE + CWCSlope + AX_CCW_COMPLIANCE_SLOPE + CCWCSlope)) & 0xFF;
 	
-	switchCom(Direction_Pin,TX_MODE);
-	sendData(AX_START);                     
-	sendData(AX_START);
-	sendData(ID);
-	sendData(AX_CS_LENGTH);
-	sendData(AX_WRITE_DATA);
-	sendData(AX_CW_COMPLIANCE_SLOPE);
-    sendData(CWCSlope);
-	sendData(AX_CCW_COMPLIANCE_SLOPE);
-    sendData(CCWCSlope);
-	sendData(Checksum);
-	delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
+	packet[0] = AX_START;
+	packet[1] = AX_START;
+	packet[2] = ID;
+	packet[3] = AX_CS_LENGTH;
+	packet[4] = AX_WRITE_DATA;
+	packet[5] = AX_CW_COMPLIANCE_SLOPE;
+	packet[6] = CWCSlope;
+	packet[7] = AX_CCW_COMPLIANCE_SLOPE;
+	packet[8] = CCWCSlope;
+	packet[9] = Checksum;
 	
-    return (read_error()); 
+	return (sendPacket(packet, length));
 }
 
 int DynamixelClass::setPunch(unsigned char ID, int Punch)
@@ -713,50 +730,54 @@ int DynamixelClass::setPunch(unsigned char ID, int Punch)
     char Punch_H,Punch_L;
     Punch_H = Punch >> 8;           // 16 bits - 2 x 8 bits variables
     Punch_L = Punch;
-	Checksum = (~(ID + AX_PUNCH_LENGTH + AX_WRITE_DATA + AX_PUNCH_L + Punch_L + Punch_H))&0xFF;
+
+	const unsigned int length = 9;
+	byte packet[length];
+
+	Checksum = (~(ID + AX_PUNCH_LENGTH + AX_WRITE_DATA + AX_PUNCH_L + Punch_L + Punch_H)) & 0xFF;
     
-	switchCom(Direction_Pin,TX_MODE);
-    sendData(AX_START);                 // Send Instructions over Serial
-    sendData(AX_START);
-    sendData(ID);
-    sendData(AX_PUNCH_LENGTH);
-    sendData(AX_WRITE_DATA);
-    sendData(AX_PUNCH_L);
-    sendData(Punch_L);
-    sendData(Punch_H);
-    sendData(Checksum);
-	delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
+	packet[0] = AX_START;
+	packet[1] = AX_START;
+	packet[2] = ID;
+	packet[3] = AX_PUNCH_LENGTH;
+	packet[4] = AX_WRITE_DATA;
+	packet[5] = AX_PUNCH_L;
+	packet[6] = Punch_L;
+	packet[7] = Punch_H;
+	packet[8] = Checksum;
 	
-    return (read_error());                 // Return the read error
+	return (sendPacket(packet, length));
 }
 
 int DynamixelClass::moving(unsigned char ID)
 {	
-    Checksum = (~(ID + AX_MOVING_LENGTH  + AX_READ_DATA + AX_MOVING + AX_BYTE_READ))&0xFF;
+	const unsigned int length = 8;
+	byte packet[length];
+
+	Checksum = (~(ID + AX_MOVING_LENGTH + AX_READ_DATA + AX_MOVING + AX_BYTE_READ)) & 0xFF;
     
-	switchCom(Direction_Pin,TX_MODE);
-    sendData(AX_START);
-    sendData(AX_START);
-    sendData(ID);
-    sendData(AX_MOVING_LENGTH);
-    sendData(AX_READ_DATA);
-    sendData(AX_MOVING);
-    sendData(AX_BYTE_READ);
-    sendData(Checksum);
-    delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
+	packet[0] = AX_START;
+	packet[1] = AX_START;
+	packet[2] = ID;
+	packet[3] = AX_MOVING_LENGTH;
+	packet[4] = AX_READ_DATA;
+	packet[5] = AX_MOVING;
+	packet[6] = AX_BYTE_READ;
+	packet[7] = Checksum;
 	
     Moving_Byte = -1;
     Time_Counter = 0;
-    while((availableData() < 6) & (Time_Counter < TIME_OUT)){
+    while((availableData() < 6) & (Time_Counter < TIME_OUT))
+    {
 		Time_Counter++;
 		delayus(1000);
     }
 	
-    while (availableData() > 0){
+    while (availableData() > 0)
+    {
 		Incoming_Byte = readData();
-		if ( (Incoming_Byte == 255) & (peekData() == 255) ){
+		if ( (Incoming_Byte == 255) & (peekData() == 255) )
+		{
 			readData();                            // Start Bytes
 			readData();                            // Ax-12 ID
 			readData();                            // Length
@@ -770,49 +791,52 @@ int DynamixelClass::moving(unsigned char ID)
 
 int DynamixelClass::lockRegister(unsigned char ID)
 {    
-	Checksum = (~(ID + AX_LR_LENGTH + AX_WRITE_DATA + AX_LOCK + LOCK))&0xFF;
+	const unsigned int length = 8;
+	byte packet[length];
 	
-	switchCom(Direction_Pin,TX_MODE);
-    sendData(AX_START);                // Send Instructions over Serial
-    sendData(AX_START);
-    sendData(ID);
-	sendData(AX_LR_LENGTH);
-    sendData(AX_WRITE_DATA);
-    sendData(AX_LOCK);
-    sendData(LOCK);
-    sendData(Checksum);
-	delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
+	Checksum = (~(ID + AX_LR_LENGTH + AX_WRITE_DATA + AX_LOCK + LOCK)) & 0xFF;
     
-    return (read_error());                // Return the read error
+	packet[0] = AX_START;
+	packet[1] = AX_START;
+	packet[2] = ID;
+	packet[3] = AX_LR_LENGTH;
+	packet[4] = AX_WRITE_DATA;
+	packet[5] = AX_LOCK;
+	packet[6] = LOCK;
+	packet[7] = Checksum;
+
+	return (sendPacket(packet, length));
 }
 
 int DynamixelClass::RWStatus(unsigned char ID)
 {	
-    Checksum = (~(ID + AX_RWS_LENGTH  + AX_READ_DATA + AX_REGISTERED_INSTRUCTION + AX_BYTE_READ))&0xFF;
+	const unsigned int length = 8;
+	byte packet[length];
+
+	Checksum = (~(ID + AX_RWS_LENGTH + AX_READ_DATA + AX_REGISTERED_INSTRUCTION + AX_BYTE_READ)) & 0xFF;
     
-	switchCom(Direction_Pin,TX_MODE);
-    sendData(AX_START);
-    sendData(AX_START);
-    sendData(ID);
-    sendData(AX_RWS_LENGTH);
-    sendData(AX_READ_DATA);
-    sendData(AX_REGISTERED_INSTRUCTION);
-    sendData(AX_BYTE_READ);
-    sendData(Checksum);
-    delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
+	packet[0] = AX_START;
+	packet[1] = AX_START;
+	packet[2] = ID;
+	packet[3] = AX_RWS_LENGTH;
+	packet[4] = AX_READ_DATA;
+	packet[5] = AX_REGISTERED_INSTRUCTION;
+	packet[6] = AX_BYTE_READ;
+	packet[7] = Checksum;
 	
     RWS_Byte = -1;
     Time_Counter = 0;
-    while((availableData() < 6) & (Time_Counter < TIME_OUT)){
+    while((availableData() < 6) & (Time_Counter < TIME_OUT))
+    {
 		Time_Counter++;
 		delayus(1000);
     }
 	
-    while (availableData() > 0){
+    while (availableData() > 0)
+    {
 		Incoming_Byte = readData();
-		if ( (Incoming_Byte == 255) & (peekData() == 255) ){
+		if ( (Incoming_Byte == 255) & (peekData() == 255) )
+		{
 			readData();                            // Start Bytes
 			readData();                            // Ax-12 ID
 			readData();                            // Length
@@ -826,30 +850,33 @@ int DynamixelClass::RWStatus(unsigned char ID)
 
 int DynamixelClass::readSpeed(unsigned char ID)
 {	
-    Checksum = (~(ID + AX_POS_LENGTH  + AX_READ_DATA + AX_PRESENT_SPEED_L + AX_BYTE_READ_POS))&0xFF;
+	const unsigned int length = 8;
+	byte packet[length];
+
+	Checksum = (~(ID + AX_POS_LENGTH + AX_READ_DATA + AX_PRESENT_SPEED_L + AX_BYTE_READ_POS)) & 0xFF;
 	
-	switchCom(Direction_Pin,TX_MODE);
-    sendData(AX_START);
-    sendData(AX_START);
-    sendData(ID);
-    sendData(AX_POS_LENGTH);
-    sendData(AX_READ_DATA);
-    sendData(AX_PRESENT_SPEED_L);
-    sendData(AX_BYTE_READ_POS);
-    sendData(Checksum);
-    delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
+	packet[0] = AX_START;
+	packet[1] = AX_START;
+	packet[2] = ID;
+	packet[3] = AX_POS_LENGTH;
+	packet[4] = AX_READ_DATA;
+	packet[5] = AX_PRESENT_SPEED_L;
+	packet[6] = AX_BYTE_READ_POS;
+	packet[7] = Checksum;
 	
     Speed_Long_Byte = -1;
 	Time_Counter = 0;
-    while((availableData() < 7) & (Time_Counter < TIME_OUT)){
+    while((availableData() < 7) & (Time_Counter < TIME_OUT))
+    {
 		Time_Counter++;
 		delayus(1000);
     }
 	
-    while (availableData() > 0){
+    while (availableData() > 0)
+    {
 		Incoming_Byte = readData();
-		if ( (Incoming_Byte == 255) & (peekData() == 255) ){
+		if ( (Incoming_Byte == 255) & (peekData() == 255) )
+		{
 			readData();                            // Start Bytes
 			readData();                            // Ax-12 ID
 			readData();                            // Length
@@ -867,9 +894,11 @@ int DynamixelClass::readSpeed(unsigned char ID)
 
 int DynamixelClass::readLoad(unsigned char ID)
 {	
-    Checksum = (~(ID + AX_POS_LENGTH  + AX_READ_DATA + AX_PRESENT_LOAD_L + AX_BYTE_READ_POS))&0xFF;
+	const unsigned int length = 8;
+	byte packet[length];
+
+	Checksum = (~(ID + AX_POS_LENGTH + AX_READ_DATA + AX_PRESENT_LOAD_L + AX_BYTE_READ_POS)) & 0xFF;
 	
-	switchCom(Direction_Pin,TX_MODE);
     sendData(AX_START);
     sendData(AX_START);
     sendData(ID);
@@ -878,19 +907,29 @@ int DynamixelClass::readLoad(unsigned char ID)
     sendData(AX_PRESENT_LOAD_L);
     sendData(AX_BYTE_READ_POS);
     sendData(Checksum);
-    delayus(TX_DELAY_TIME);
-	switchCom(Direction_Pin,RX_MODE);
+
+	packet[0] = AX_START;
+	packet[1] = AX_START;
+	packet[2] = ID;
+	packet[3] = AX_POS_LENGTH;
+	packet[4] = AX_READ_DATA;
+	packet[5] = AX_PRESENT_LOAD_L;
+	packet[6] = AX_BYTE_READ_POS;
+	packet[7] = Checksum;
 	
     Load_Long_Byte = -1;
 	Time_Counter = 0;
-    while((availableData() < 7) & (Time_Counter < TIME_OUT)){
+    while((availableData() < 7) & (Time_Counter < TIME_OUT))
+    {
 		Time_Counter++;
 		delayus(1000);
     }
 	
-    while (availableData() > 0){
+    while (availableData() > 0)
+    {
 		Incoming_Byte = readData();
-		if ( (Incoming_Byte == 255) & (peekData() == 255) ){
+		if ( (Incoming_Byte == 255) & (peekData() == 255) )
+		{
 			readData();                            // Start Bytes
 			readData();                            // Ax-12 ID
 			readData();                            // Length
