@@ -7,6 +7,7 @@
 
 unsigned char Direction_Pin = 10;
 long baud = 1000000;
+unsigned int ID = 1;
 
 int initial_pos = 512;
 int max = initial_pos + 100;
@@ -36,6 +37,6 @@ void loop()
 		delta *= -1;
 	}
 
-	Dynamixel.move(1,pos);
+	Dynamixel.move(ID, pos);
 	delay(20);
 }

@@ -7,12 +7,13 @@
 
 unsigned char Direction_Pin = 10;
 long baud = 1000000;
+unsigned int ID = 1;
 
 void setup()
 {
 	Dynamixel.begin(baud, Direction_Pin, &Serial);
-	Dynamixel.setEndless(1,ON);
-	Dynamixel.turn(1,LEFT,100);
+	Dynamixel.setEndless(ID, ON);
+	Dynamixel.turn(ID, LEFT, 100);
 }
 
 void loop()

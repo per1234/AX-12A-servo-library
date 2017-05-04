@@ -7,6 +7,7 @@
 
 unsigned char Direction_Pin = 10;
 long baud = 1000000;
+unsigned int ID = 1;
 
 void setup()
 {
@@ -15,8 +16,8 @@ void setup()
 
 void loop()
 {
-	Dynamixel.ledStatus(1, ON);
+	Dynamixel.ledStatus(ID, ON);
 	delay(1000);
-	Dynamixel.ledStatus(1, OFF);
+	Dynamixel.ledStatus(ID, OFF);
 	delay(1000);
 }
