@@ -193,6 +193,8 @@ public:
 	
 	int torqueStatus(unsigned char ID, bool Status);
 	int ledStatus(unsigned char ID, bool Status);
+
+	int sendPacket(byte *packet, unsigned int length);
 };
 
 extern DynamixelClass Dynamixel;
