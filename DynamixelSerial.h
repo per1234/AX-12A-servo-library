@@ -113,8 +113,7 @@
 #define AX_START                    255
 #define AX_CCW_AL_L                 255 
 #define AX_CCW_AL_H                 3
-#define TIME_OUT                    10  //TODO : needed ?
-#define TX_DELAY_TIME				180 //TODO : needed ?
+#define TIME_OUT                    10
 #define TX_MODE                     1
 #define RX_MODE                     0
 #define LOCK                        1
@@ -143,6 +142,8 @@ private:
 	int Temperature_Byte;
 	int Voltage_Byte;
 	int Error_Byte; 
+
+	int returned_Byte;
 
 	int read_error(void);
 
@@ -196,6 +197,8 @@ public:
 
 	int sendPacket(byte *packet, unsigned int length);
 	void sendPacketNoError(byte *packet, unsigned int length);
+
+	int readRegister(unsigned char ID, byte reg, byte reg_len);
 };
 
 extern DynamixelClass Dynamixel;
