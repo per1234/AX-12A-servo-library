@@ -8,17 +8,18 @@
 
 // Macros /////////////////////////////////////////////////////////////////////
 
-#define sendData(args)  (varSerial->write(args))    // Write Over Serial
-#define availableData() (varSerial->available())    // Check Serial Data Available
-#define readData()      (varSerial->read())         // Read Serial Data
-#define peekData()      (varSerial->peek())         // Peek Serial Data
-#define beginCom(args)  (varSerial->begin(args))    // Begin Serial Comunication 
-#define endCom()        (varSerial->end())          // End Serial Comunication
+#define sendData(packet, length)  	(varSerial->write(packet, length))    	// Write Over Serial
+#define flush()						(varSerial->flush())					// Wait until buffer empty
+#define availableData() 			(varSerial->available())    			// Check Serial Data Available
+#define readData()      			(varSerial->read())         			// Read Serial Data
+#define peekData()      			(varSerial->peek())         			// Peek Serial Data
+#define beginCom(args)  			(varSerial->begin(args))   				// Begin Serial Comunication
+#define endCom()        			(varSerial->end())          			// End Serial Comunication
 
-#define setDPin(DirPin,Mode)   (pinMode(DirPin,Mode))       // Select the Switch to TX/RX Mode Pin
-#define switchCom(DirPin,Mode) (digitalWrite(DirPin,Mode))  // Switch to TX/RX Mode
+#define setDPin(DirPin,Mode)   		(pinMode(DirPin,Mode))       			// Select the Switch to TX/RX Mode Pin
+#define switchCom(DirPin,Mode) 		(digitalWrite(DirPin,Mode))  			// Switch to TX/RX Mode
 
-#define delayus(args) (delayMicroseconds(args))  // Delay Microseconds
+#define delayus(args) 				(delayMicroseconds(args))  				// Delay Microseconds
 
 // Private Methods ////////////////////////////////////////////////////////////
 
@@ -26,15 +27,17 @@ int DynamixelClass::read_error(void)
 {
 	
 	Time_Counter = 0;
-	while((availableData() < 5) & (Time_Counter < TIME_OUT)){  // Wait for Data
+	while((availableData() < 5) & (Time_Counter < TIME_OUT)) // Wait for Data
+	{
 		Time_Counter++;
 		delayus(1000);
 	}
 	
-	while (availableData() > 0){
-
+	while (availableData() > 0)
+	{
 		Incoming_Byte = readData();
-		if ( (Incoming_Byte == 255) & (peekData() == 255) ){
+		if ( (Incoming_Byte == 255) & (peekData() == 255) )
+		{
 			readData();                                    // Start Bytes
 			readData();                                    // Ax-12 ID
 			readData();                                    // Length
@@ -948,8 +951,8 @@ int DynamixelClass::sendPacket(byte* packet, unsigned int length)
 {
 	switchCom(Direction_Pin, TX_MODE); 	// Switch to Transmission  Mode
 
-	Serial.write(packet, length);		// Send data through sending buffer
-	Serial.flush(); 					// Wait until buffer is empty
+	sendData(packet, length);			// Send data through sending buffer
+	flush(); 							// Wait until buffer is empty
 
 	switchCom(Direction_Pin, RX_MODE); 	// Switch back to Reception Mode
 
@@ -960,8 +963,8 @@ void DynamixelClass::sendPacketNoError(byte* packet, unsigned int length)
 {
 	switchCom(Direction_Pin, TX_MODE); 	// Switch to Transmission  Mode
 
-	Serial.write(packet, length);		// Send data through sending buffer
-	Serial.flush(); 					// Wait until buffer is empty
+	sendData(packet, length);			// Send data through sending buffer
+	flush(); 							// Wait until buffer is empty
 
 	switchCom(Direction_Pin, RX_MODE); 	// Switch back to Reception Mode
 }
