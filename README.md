@@ -15,7 +15,7 @@ To use the library, include header file :
 ```
 
 The library is provided with 4 Arduino examples :
-- **Blink** : simpliest example to blink a the built-in LED
+- **Blink** : simpliest example to blink the built-in LED
 - **Move** : example showing how to set a goal position
 - **EndlessTurn** : example of endlessTurn mode (wheel mode)
 - **readRegister** : debug AX-12A by printing all its registers
