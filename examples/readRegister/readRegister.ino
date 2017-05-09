@@ -1,5 +1,5 @@
 /*
- * Example showing how to reag internal register of AX-12A
+ * Example showing how to read internal register of AX-12A
  * Can be usefull for debugging purposes
  */
 
