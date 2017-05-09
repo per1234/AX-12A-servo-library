@@ -24,7 +24,7 @@ You can change AX-12A settings by connecting your servo to a PC via [USB2Dynamix
 
 To do so, you also have to install [Dynamixel Wizard][RoboPlus] included in the RoboPlus software suite.
 
-Follow [these instrunctions][Dynamixel Wizard] to connect and access the AX-12A settings.
+Follow [these instructions][Dynamixel Wizard] to connect and access the AX-12A settings.
 
 ## Baud rate tests
 
