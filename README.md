@@ -20,19 +20,24 @@ To do so, you also have to install [Dynamixel Wizard][Dynamixel Wizard] included
 
 ## Baud rate tests
 
-We tested the library on differents boards at differents baud rates :
+We tested the library on differents boards at the most common baud rates.
+Some boards cannot reach the desired baud rate :
 
+  ------------   ---------   ----------   ------------   -----   -------  
 | Address 0x04 | Baud rate | Feather M0 | Feather 32u4 | nRF52 | STM32L4 |
-| ------ | ------ | ------ | ------ | ------ | ------ | 
-| 1	| 1000000 |	ok | ok | ok | fail |
-| 3 | 500000 | ok | ok | fail | ok |
-| 4 | 400000 | ok | fail | fail | ok
-| 7 | 250000 | ok | ok | ok | ok |
-| 9 | 200000 | ok | ok | fail | ok |
-| 16 | 115200 | ok | ok | ok | ok |
-| 34 | 57600 | ok | fail | ok | ok |
-| 103 | 19200 | ok | ok | ok | ok |
-| 207 | 9600 | ok | ok | ok | ok |
+| ------------ | --------- | ---------- | ------------ | ----- | ------- | 
+| 1	           | 1000000   | ok         | ok           | ok    | fail    |
+| 3            | 500000    | ok         | ok           | fail  | ok      |
+| 4            | 400000    | ok         | fail         | fail  | ok      |
+| 7            | 250000    | ok         | ok           | ok    | ok      |
+| 9            | 200000    | ok         | ok           | fail  | ok      |
+| 16           | 115200    | ok         | ok           | ok    | ok      |
+| 34           | 57600     | ok         | fail         | ok    | ok      |
+| 103          | 19200     | ok         | ok           | ok    | ok      |
+| 207          | 9600      | ok         | ok           | ok    | ok      |
+  ------------   ---------   ----------   ------------   -----   -------  
+
+
 
 [USB2DXL]: <http://support.robotis.com/en/product/auxdevice/interface/usb2dxl_manual.htm>
 [Dynamixel Wizard]: <http://en.robotis.com/BlueAD/board.php?bbs_id=downloads&scate=SOFTWARE>
