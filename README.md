@@ -1,6 +1,8 @@
 # Dynamixel AX-12A Robot Actuator
 
-[![AX-12A](https://static.generation-robots.com/3053/dynamixel-ax-12a-servomotor.jpg)](http://www.trossenrobotics.com/images/productdownloads/AX-12(English).pdf)
+[![Datasheet](https://static.generation-robots.com/3053/dynamixel-ax-12a-servomotor.jpg)](http://www.trossenrobotics.com/images/productdownloads/AX-12(English).pdf)
+
+[AX-12A Datasheet][Datasheet]
 
 ## How to install the library
 - Download zip file
@@ -20,9 +22,23 @@ The library is provided with 4 Arduino examples :
 - **EndlessTurn** : example of endlessTurn mode (wheel mode)
 - **readRegister** : debug AX-12A by printing all its registers
 
-You can change AX-12A settings by connecting your servo to a PC via [USB2Dynamixel][USB2DXL].
+You have 4 lines to configure :
+```
+unsigned char Direction_Pin = 2;
+long baud = 1000000;
+unsigned int ID = 1;
+...
+Dynamixel.begin(baud, Direction_Pin, &Serial);
+```
+`Direction_Pin` is the GPIO used to change communication direction.
+`baud` corresponds to the baud rate used to communicate with the servo.
+`ID` corresponds to the ID of your servo (from 0 to 253, 254 is used for broadcast).
+`&Serial` refers to the serial port you want to use. It may have to be changed to `&Serial1`, `&SerialUSB` or other depending on the board package you use (variant files).
 
-To do so, you also have to install [Dynamixel Wizard][RoboPlus] included in the RoboPlus software suite.
+
+Change AX-12A settings by connecting the servo to a PC via [USB2Dynamixel][USB2DXL].
+
+To do so, install [Dynamixel Wizard][RoboPlus] included in the RoboPlus software suite.
 
 Follow [these instructions][Dynamixel Wizard] to connect and access the AX-12A settings.
 
@@ -49,3 +65,4 @@ Some boards cannot reach the desired baud rate :
 [USB2DXL]: <http://support.robotis.com/en/product/auxdevice/interface/usb2dxl_manual.htm>
 [RoboPlus]: <http://en.robotis.com/BlueAD/board.php?bbs_id=downloads&scate=SOFTWARE>
 [Dynamixel Wizard]: <http://support.robotis.com/en/software/roboplus/dynamixel_monitor.htm>
+[Datasheet]: <http://www.trossenrobotics.com/images/productdownloads/AX-12(English).pdf>
