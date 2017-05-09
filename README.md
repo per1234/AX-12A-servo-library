@@ -30,9 +30,13 @@ unsigned int ID = 1;
 ...
 Dynamixel.begin(baud, Direction_Pin, &Serial);
 ```
+
 `Direction_Pin` is the GPIO used to change communication direction.
+
 `baud` corresponds to the baud rate used to communicate with the servo.
+
 `ID` corresponds to the ID of your servo (from 0 to 253, 254 is used for broadcast).
+
 `&Serial` refers to the serial port you want to use. It may have to be changed to `&Serial1`, `&SerialUSB` or other depending on the board package you use (variant files).
 
 
