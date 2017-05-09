@@ -32,7 +32,6 @@ We tested the library on differents boards at the most common baud rates.
 
 Some boards cannot reach the desired baud rate :
 
-  ------------   ---------   ----------   ------------   -----   -------  
 | Address 0x04 | Baud rate | Feather M0 | Feather 32u4 | nRF52 | STM32L4 |
 | ------------ | --------- | ---------- | ------------ | ----- | ------- | 
 | 1	           | 1000000   | ok         | ok           | ok    | fail    |
@@ -44,7 +43,6 @@ Some boards cannot reach the desired baud rate :
 | 34           | 57600     | ok         | fail         | ok    | ok      |
 | 103          | 19200     | ok         | ok           | ok    | ok      |
 | 207          | 9600      | ok         | ok           | ok    | ok      |
-  ------------   ---------   ----------   ------------   -----   -------  
 
 
 
