@@ -1,18 +1,18 @@
-#include "DynamixelSerial.h"
 #include "Arduino.h"
+#include "src/AX12A.h"
 
 unsigned char Direction_Pin = 10;
 long baud = 1000000;
 
 void setup()
 {
-	Dynamixel.begin(baud, Direction_Pin, &Serial);
+	AX12A.begin(baud, Direction_Pin, &Serial);
 }
 
 void loop()
 {
-	Dynamixel.ledStatus(1, ON);
+	AX12A.ledStatus(1, ON);
 	delay(1000);
-	Dynamixel.ledStatus(1, OFF);
+	AX12A.ledStatus(1, OFF);
 	delay(1000);
 }

@@ -4,7 +4,7 @@
 #include "WProgram.h"
 #endif
 
-#include "DynamixelSerial.h"
+#include "AX12A.h"
 
 // Macros /////////////////////////////////////////////////////////////////////
 
@@ -23,7 +23,7 @@
 
 // Private Methods ////////////////////////////////////////////////////////////
 
-int DynamixelClass::read_error(void)
+int AX12AClass::read_error(void)
 {
 	
 	Time_Counter = 0;
@@ -50,7 +50,7 @@ int DynamixelClass::read_error(void)
 
 // Public Methods /////////////////////////////////////////////////////////////
 
-void DynamixelClass::begin(long baud, unsigned char directionPin, HardwareSerial *srl)
+void AX12AClass::begin(long baud, unsigned char directionPin, HardwareSerial *srl)
 {
 	varSerial = srl;
 	Direction_Pin = directionPin;
@@ -58,12 +58,12 @@ void DynamixelClass::begin(long baud, unsigned char directionPin, HardwareSerial
 	beginCom(baud);
 }
 
-void DynamixelClass::end()
+void AX12AClass::end()
 {
 	endCom();
 }
 
-int DynamixelClass::reset(unsigned char ID)
+int AX12AClass::reset(unsigned char ID)
 {
 	const unsigned int length = 6;
 	byte packet[length];
@@ -80,7 +80,7 @@ int DynamixelClass::reset(unsigned char ID)
     return (sendPacket(packet, length));
 }
 
-int DynamixelClass::ping(unsigned char ID)
+int AX12AClass::ping(unsigned char ID)
 {
 	const unsigned int length = 6;
 	byte packet[length];
@@ -97,7 +97,7 @@ int DynamixelClass::ping(unsigned char ID)
 	return (sendPacket(packet, length));
 }
 
-int DynamixelClass::setID(unsigned char ID, unsigned char newID)
+int AX12AClass::setID(unsigned char ID, unsigned char newID)
 {    
 	const unsigned int length = 8;
 	byte packet[length];
@@ -116,7 +116,7 @@ int DynamixelClass::setID(unsigned char ID, unsigned char newID)
     return (sendPacket(packet, length));
 }
 
-int DynamixelClass::setBD(unsigned char ID, long baud)
+int AX12AClass::setBD(unsigned char ID, long baud)
 {    
 	const unsigned int length = 8;
 	byte packet[length];
@@ -136,7 +136,7 @@ int DynamixelClass::setBD(unsigned char ID, long baud)
 	return (sendPacket(packet, length));
 }
 
-int DynamixelClass::move(unsigned char ID, int Position)
+int AX12AClass::move(unsigned char ID, int Position)
 {
     char Position_H,Position_L;
     Position_H = Position >> 8;           // 16 bits - 2 x 8 bits variables
@@ -160,7 +160,7 @@ int DynamixelClass::move(unsigned char ID, int Position)
     return (sendPacket(packet, length));
 }
 
-int DynamixelClass::moveSpeed(unsigned char ID, int Position, int Speed)
+int AX12AClass::moveSpeed(unsigned char ID, int Position, int Speed)
 {
     char Position_H,Position_L,Speed_H,Speed_L;
     Position_H = Position >> 8;    
@@ -188,7 +188,7 @@ int DynamixelClass::moveSpeed(unsigned char ID, int Position, int Speed)
     return (sendPacket(packet, length));
 }
 
-int DynamixelClass::setEndless(unsigned char ID, bool Status)
+int AX12AClass::setEndless(unsigned char ID, bool Status)
 {
 	if ( Status )
 	{
@@ -232,7 +232,7 @@ int DynamixelClass::setEndless(unsigned char ID, bool Status)
 	}
 }
 
-int DynamixelClass::turn(unsigned char ID, bool SIDE, int Speed)
+int AX12AClass::turn(unsigned char ID, bool SIDE, int Speed)
 {		
 		if (SIDE == LEFT)
 		{
@@ -283,7 +283,7 @@ int DynamixelClass::turn(unsigned char ID, bool SIDE, int Speed)
 		}
 }
 
-int DynamixelClass::moveRW(unsigned char ID, int Position)
+int AX12AClass::moveRW(unsigned char ID, int Position)
 {
     char Position_H,Position_L;
     Position_H = Position >> 8;           // 16 bits - 2 x 8 bits variables
@@ -307,7 +307,7 @@ int DynamixelClass::moveRW(unsigned char ID, int Position)
     return (sendPacket(packet, length));
 }
 
-int DynamixelClass::moveSpeedRW(unsigned char ID, int Position, int Speed)
+int AX12AClass::moveSpeedRW(unsigned char ID, int Position, int Speed)
 {
     char Position_H,Position_L,Speed_H,Speed_L;
     Position_H = Position >> 8;    
@@ -335,7 +335,7 @@ int DynamixelClass::moveSpeedRW(unsigned char ID, int Position, int Speed)
     return (sendPacket(packet, length));
 }
 
-void DynamixelClass::action()
+void AX12AClass::action()
 {	
 	const unsigned int length = 6;
 	byte packet[length];
@@ -350,7 +350,7 @@ void DynamixelClass::action()
     sendPacket(packet, length);
 }
 
-int DynamixelClass::torqueStatus( unsigned char ID, bool Status)
+int AX12AClass::torqueStatus( unsigned char ID, bool Status)
 {
 	const unsigned int length = 8;
 	byte packet[length];
@@ -369,7 +369,7 @@ int DynamixelClass::torqueStatus( unsigned char ID, bool Status)
     return (sendPacket(packet, length));
 }
 
-int DynamixelClass::ledStatus(unsigned char ID, bool Status)
+int AX12AClass::ledStatus(unsigned char ID, bool Status)
 {    
 	const unsigned int length = 8;
 	byte packet[length];
@@ -388,7 +388,7 @@ int DynamixelClass::ledStatus(unsigned char ID, bool Status)
 	return (sendPacket(packet, length)); // return error
 }
 
-int DynamixelClass::readTemperature(unsigned char ID)
+int AX12AClass::readTemperature(unsigned char ID)
 {	
 	const unsigned int length = 8;
 	byte packet[length];
@@ -430,7 +430,7 @@ int DynamixelClass::readTemperature(unsigned char ID)
 	return (Temperature_Byte);               // Returns the read temperature
 }
 
-int DynamixelClass::readPosition(unsigned char ID)
+int AX12AClass::readPosition(unsigned char ID)
 {	
 	const unsigned int length = 8;
 	byte packet[length];
@@ -476,7 +476,7 @@ int DynamixelClass::readPosition(unsigned char ID)
 	return (Position_Long_Byte);     // Returns the read position
 }
 
-int DynamixelClass::readVoltage(unsigned char ID)
+int AX12AClass::readVoltage(unsigned char ID)
 {    
 	const unsigned int length = 8;
 	byte packet[length];
@@ -518,7 +518,7 @@ int DynamixelClass::readVoltage(unsigned char ID)
 	return (Voltage_Byte);               // Returns the read Voltage
 }
 
-int DynamixelClass::setTempLimit(unsigned char ID, unsigned char Temperature)
+int AX12AClass::setTempLimit(unsigned char ID, unsigned char Temperature)
 {
 	const unsigned int length = 8;
 	byte packet[length];
@@ -537,7 +537,7 @@ int DynamixelClass::setTempLimit(unsigned char ID, unsigned char Temperature)
 	return (sendPacket(packet, length));
 }
 
-int DynamixelClass::setVoltageLimit(unsigned char ID, unsigned char DVoltage, unsigned char UVoltage)
+int AX12AClass::setVoltageLimit(unsigned char ID, unsigned char DVoltage, unsigned char UVoltage)
 {
 	const unsigned int length = 9;
 	byte packet[length];
@@ -557,7 +557,7 @@ int DynamixelClass::setVoltageLimit(unsigned char ID, unsigned char DVoltage, un
 	return (sendPacket(packet, length));
 }
 
-int DynamixelClass::setAngleLimit(unsigned char ID, int CWLimit, int CCWLimit)
+int AX12AClass::setAngleLimit(unsigned char ID, int CWLimit, int CCWLimit)
 {
 	char CW_H,CW_L,CCW_H,CCW_L;
     CW_H = CWLimit >> 8;    
@@ -586,7 +586,7 @@ int DynamixelClass::setAngleLimit(unsigned char ID, int CWLimit, int CCWLimit)
 	return (sendPacket(packet, length));
 }
 
-int DynamixelClass::setMaxTorque(unsigned char ID, int MaxTorque)
+int AX12AClass::setMaxTorque(unsigned char ID, int MaxTorque)
 {
     char MaxTorque_H,MaxTorque_L;
     MaxTorque_H = MaxTorque >> 8;           // 16 bits - 2 x 8 bits variables
@@ -610,7 +610,7 @@ int DynamixelClass::setMaxTorque(unsigned char ID, int MaxTorque)
 	return (sendPacket(packet, length));
 }
 
-int DynamixelClass::setSRL(unsigned char ID, unsigned char SRL)
+int AX12AClass::setSRL(unsigned char ID, unsigned char SRL)
 {    
 	const unsigned int length = 8;
 	byte packet[length];
@@ -629,7 +629,7 @@ int DynamixelClass::setSRL(unsigned char ID, unsigned char SRL)
 	return (sendPacket(packet, length));
 }
 
-int DynamixelClass::setRDT(unsigned char ID, unsigned char RDT)
+int AX12AClass::setRDT(unsigned char ID, unsigned char RDT)
 {    
 	const unsigned int length = 8;
 	byte packet[length];
@@ -648,7 +648,7 @@ int DynamixelClass::setRDT(unsigned char ID, unsigned char RDT)
 	return (sendPacket(packet, length));
 }
 
-int DynamixelClass::setLEDAlarm(unsigned char ID, unsigned char LEDAlarm)
+int AX12AClass::setLEDAlarm(unsigned char ID, unsigned char LEDAlarm)
 {    
 	const unsigned int length = 8;
 	byte packet[length];
@@ -667,7 +667,7 @@ int DynamixelClass::setLEDAlarm(unsigned char ID, unsigned char LEDAlarm)
 	return (sendPacket(packet, length));
 }
 
-int DynamixelClass::setShutdownAlarm(unsigned char ID, unsigned char SALARM)
+int AX12AClass::setShutdownAlarm(unsigned char ID, unsigned char SALARM)
 {    
 	const unsigned int length = 8;
 	byte packet[length];
@@ -686,7 +686,7 @@ int DynamixelClass::setShutdownAlarm(unsigned char ID, unsigned char SALARM)
 	return (sendPacket(packet, length));
 }
 
-int DynamixelClass::setCMargin(unsigned char ID, unsigned char CWCMargin, unsigned char CCWCMargin)
+int AX12AClass::setCMargin(unsigned char ID, unsigned char CWCMargin, unsigned char CCWCMargin)
 {
 	const unsigned int length = 10;
 	byte packet[length];
@@ -707,7 +707,7 @@ int DynamixelClass::setCMargin(unsigned char ID, unsigned char CWCMargin, unsign
 	return (sendPacket(packet, length));
 }
 
-int DynamixelClass::setCSlope(unsigned char ID, unsigned char CWCSlope, unsigned char CCWCSlope)
+int AX12AClass::setCSlope(unsigned char ID, unsigned char CWCSlope, unsigned char CCWCSlope)
 {
 	const unsigned int length = 10;
 	byte packet[length];
@@ -728,7 +728,7 @@ int DynamixelClass::setCSlope(unsigned char ID, unsigned char CWCSlope, unsigned
 	return (sendPacket(packet, length));
 }
 
-int DynamixelClass::setPunch(unsigned char ID, int Punch)
+int AX12AClass::setPunch(unsigned char ID, int Punch)
 {
     char Punch_H,Punch_L;
     Punch_H = Punch >> 8;           // 16 bits - 2 x 8 bits variables
@@ -752,7 +752,7 @@ int DynamixelClass::setPunch(unsigned char ID, int Punch)
 	return (sendPacket(packet, length));
 }
 
-int DynamixelClass::moving(unsigned char ID)
+int AX12AClass::moving(unsigned char ID)
 {	
 	const unsigned int length = 8;
 	byte packet[length];
@@ -794,7 +794,7 @@ int DynamixelClass::moving(unsigned char ID)
 	return (Moving_Byte);              				// Returns the read Moving
 }
 
-int DynamixelClass::lockRegister(unsigned char ID)
+int AX12AClass::lockRegister(unsigned char ID)
 {    
 	const unsigned int length = 8;
 	byte packet[length];
@@ -813,7 +813,7 @@ int DynamixelClass::lockRegister(unsigned char ID)
 	return (sendPacket(packet, length));
 }
 
-int DynamixelClass::RWStatus(unsigned char ID)
+int AX12AClass::RWStatus(unsigned char ID)
 {	
 	const unsigned int length = 8;
 	byte packet[length];
@@ -855,7 +855,7 @@ int DynamixelClass::RWStatus(unsigned char ID)
 	return (RWS_Byte);               				// Returns the read RWStatus
 }
 
-int DynamixelClass::readSpeed(unsigned char ID)
+int AX12AClass::readSpeed(unsigned char ID)
 {	
 	const unsigned int length = 8;
 	byte packet[length];
@@ -901,7 +901,7 @@ int DynamixelClass::readSpeed(unsigned char ID)
 	return (Speed_Long_Byte);     // Returns the read position
 }
 
-int DynamixelClass::readLoad(unsigned char ID)
+int AX12AClass::readLoad(unsigned char ID)
 {	
 	const unsigned int length = 8;
 	byte packet[length];
@@ -947,7 +947,7 @@ int DynamixelClass::readLoad(unsigned char ID)
 	return (Load_Long_Byte);     // Returns the read position
 }
 
-int DynamixelClass::sendPacket(byte* packet, unsigned int length)
+int AX12AClass::sendPacket(byte* packet, unsigned int length)
 {
 	switchCom(Direction_Pin, TX_MODE); 	// Switch to Transmission  Mode
 
@@ -959,7 +959,7 @@ int DynamixelClass::sendPacket(byte* packet, unsigned int length)
 	return (read_error());              // Return the read error
 }
 
-void DynamixelClass::sendPacketNoError(byte* packet, unsigned int length)
+void AX12AClass::sendPacketNoError(byte* packet, unsigned int length)
 {
 	switchCom(Direction_Pin, TX_MODE); 	// Switch to Transmission  Mode
 
@@ -969,7 +969,7 @@ void DynamixelClass::sendPacketNoError(byte* packet, unsigned int length)
 	switchCom(Direction_Pin, RX_MODE); 	// Switch back to Reception Mode
 }
 
-int DynamixelClass::readRegister(unsigned char ID, byte reg, byte reg_len)
+int AX12AClass::readRegister(unsigned char ID, byte reg, byte reg_len)
 {
 	const unsigned int length = 8;
 	byte packet[length];
@@ -1021,4 +1021,4 @@ int DynamixelClass::readRegister(unsigned char ID, byte reg, byte reg_len)
 	return (returned_Byte);     // Returns the read position
 }
 
-DynamixelClass Dynamixel;
+AX12AClass AX12A;

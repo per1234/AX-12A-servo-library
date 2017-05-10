@@ -4,8 +4,8 @@
  *
  */
 
-#ifndef DynamixelSerial_h
-#define DynamixelSerial_h
+#ifndef AX12A_h
+#define AX12A_h
 
 	// EEPROM AREA  ///////////////////////////////////////////////////////////
 #define AX_MODEL_NUMBER_L           0
@@ -120,7 +120,7 @@
 
 #include <inttypes.h>
 
-class DynamixelClass {
+class AX12AClass {
 private:
 	
 	unsigned char Checksum; //TODO : Try with Byte
@@ -151,8 +151,6 @@ private:
 
 public:
 	void begin(long baud, unsigned char directionPin, HardwareSerial *srl);
-	void begin(long baud, unsigned char directionPin);
-	void begin(long baud);
 	void end(void);
 	
 	int reset(unsigned char ID);
@@ -201,6 +199,6 @@ public:
 	int readRegister(unsigned char ID, byte reg, byte reg_len);
 };
 
-extern DynamixelClass Dynamixel;
+extern AX12AClass AX12A;
 
 #endif

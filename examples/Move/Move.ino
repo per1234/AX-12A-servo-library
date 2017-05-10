@@ -2,8 +2,8 @@
  * Example showing how to send position commands to AX-12A
  */
 
-#include "DynamixelSerial.h"
 #include "Arduino.h"
+#include "../../src/AX12A.h"
 
 unsigned char Direction_Pin = 10;
 long baud = 1000000;
@@ -18,7 +18,7 @@ int delta = 5;
 
 void setup()
 {
-	Dynamixel.begin(baud, Direction_Pin, &Serial);
+	AX12A.begin(baud, Direction_Pin, &Serial);
 }
 
 void loop()
@@ -37,6 +37,6 @@ void loop()
 		delta *= -1;
 	}
 
-	Dynamixel.move(ID, pos);
+	AX12A.move(ID, pos);
 	delay(20);
 }
