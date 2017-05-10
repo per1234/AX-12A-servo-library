@@ -11,9 +11,9 @@
 - Put the folder into your library folder (usually Documents/Arduino/libraries)
 
 ## How to use the library
-To use the library, include header file :
+To use the library, include header file located in the src folder :
 ```
-#include "DynamixelSerial.h"
+#include "src/AX12A.h"
 ```
 
 The library is provided with 4 Arduino examples :
@@ -24,18 +24,18 @@ The library is provided with 4 Arduino examples :
 
 You have 4 lines to configure :
 ```
-unsigned char Direction_Pin = 2;
-long baud = 1000000;
-unsigned int ID = 1;
+#define DirectionPin 	(10u)
+#define BaudRate  		(1000000ul)
+#define ID				(1u)
 ...
-Dynamixel.begin(baud, Direction_Pin, &Serial);
+AX12A.begin(BaudRate, DirectionPin, &Serial);
 ```
 
-`Direction_Pin` is the GPIO used to change communication direction.
+`DirectionPin` is the GPIO used to change communication direction.
 
-`baud` corresponds to the baud rate used to communicate with the servo.
+`BaudRate` corresponds to the baud rate used to communicate with the servo.
 
-`ID` corresponds to the ID of your servo (from 0 to 253, 254 is used for broadcast).
+`ID` corresponds to the ID of the servo (from 0 to 253, 254 is used for broadcast).
 
 `&Serial` refers to the serial port you want to use. It may have to be changed to `&Serial1`, `&SerialUSB` or other depending on the board package you use (variant files).
 
