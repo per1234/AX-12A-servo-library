@@ -8,7 +8,7 @@
 
 // Macros /////////////////////////////////////////////////////////////////////
 
-#define sendData(packet, length)  	(varSerial->write((uint8_t*) packet, length))    	// Write Over Serial
+#define sendData(packet, length)  	(varSerial->write(packet, length))    	// Write Over Serial
 #define flush()						(varSerial->flush())					// Wait until buffer empty
 #define availableData() 			(varSerial->available())    			// Check Serial Data Available
 #define readData()      			(varSerial->read())         			// Read Serial Data
