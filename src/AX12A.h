@@ -123,7 +123,7 @@
 class AX12AClass {
 private:
 	
-	unsigned char Checksum; //TODO : Try with Byte
+	unsigned char Checksum;
 	unsigned char Direction_Pin;
 	unsigned char Time_Counter;
 	unsigned char Incoming_Byte;               
@@ -196,7 +196,7 @@ public:
 	int sendAXPacket(unsigned char *packet, unsigned int length);
 	void sendAXPacketNoError(unsigned char *packet, unsigned int length);
 
-	int readRegister(unsigned char ID, byte reg, byte reg_len);
+	int readRegister(unsigned char ID, unsigned char reg, unsigned char reg_len);
 };
 
 extern AX12AClass AX12A;
