@@ -8,7 +8,7 @@
 
 // Macros /////////////////////////////////////////////////////////////////////
 
-#define sendData(packet, length)  	(varSerial->write(packet, length))    	// Write Over Serial
+#define sendData(packet, length)  	(varSerial->write((uint8_t*) packet, length))    	// Write Over Serial
 #define flush()						(varSerial->flush())					// Wait until buffer empty
 #define availableData() 			(varSerial->available())    			// Check Serial Data Available
 #define readData()      			(varSerial->read())         			// Read Serial Data
@@ -66,7 +66,7 @@ void AX12AClass::end()
 int AX12AClass::reset(unsigned char ID)
 {
 	const unsigned int length = 6;
-	byte packet[length];
+	unsigned char packet[length];
 	
 	Checksum = (~(ID + AX_RESET_LENGTH + AX_RESET)) & 0xFF;
 
@@ -77,13 +77,13 @@ int AX12AClass::reset(unsigned char ID)
 	packet[4] = AX_RESET;
 	packet[5] = Checksum;
 
-    return (sendPacket(packet, length));
+    return (sendAXPacket(packet, length));
 }
 
 int AX12AClass::ping(unsigned char ID)
 {
 	const unsigned int length = 6;
-	byte packet[length];
+	unsigned char packet[length];
 
 	Checksum = (~(ID + AX_READ_DATA + AX_PING)) & 0xFF;
 	
@@ -94,13 +94,13 @@ int AX12AClass::ping(unsigned char ID)
 	packet[4] = AX_PING;
 	packet[5] = Checksum;
 
-	return (sendPacket(packet, length));
+	return (sendAXPacket(packet, length));
 }
 
 int AX12AClass::setID(unsigned char ID, unsigned char newID)
 {    
 	const unsigned int length = 8;
-	byte packet[length];
+	unsigned char packet[length];
 
 	Checksum = (~(ID + AX_ID_LENGTH + AX_WRITE_DATA + AX_ID + newID)) & 0xFF;
 
@@ -113,13 +113,13 @@ int AX12AClass::setID(unsigned char ID, unsigned char newID)
 	packet[6] = newID;
 	packet[7] = Checksum;
 
-    return (sendPacket(packet, length));
+    return (sendAXPacket(packet, length));
 }
 
 int AX12AClass::setBD(unsigned char ID, long baud)
 {    
 	const unsigned int length = 8;
-	byte packet[length];
+	unsigned char packet[length];
 
 	unsigned char Baud_Rate = (2000000/baud) - 1;
 	Checksum = (~(ID + AX_BD_LENGTH + AX_WRITE_DATA + AX_BAUD_RATE + Baud_Rate)) & 0xFF;
@@ -133,7 +133,7 @@ int AX12AClass::setBD(unsigned char ID, long baud)
 	packet[6] = Baud_Rate;
 	packet[7] = Checksum;
     
-	return (sendPacket(packet, length));
+	return (sendAXPacket(packet, length));
 }
 
 int AX12AClass::move(unsigned char ID, int Position)
@@ -143,9 +143,9 @@ int AX12AClass::move(unsigned char ID, int Position)
     Position_L = Position;
 
     const unsigned int length = 9;
-    byte packet[length];
+    unsigned char packet[length];
 
-	byte Checksum = (~(ID + AX_GOAL_LENGTH + AX_WRITE_DATA + AX_GOAL_POSITION_L + Position_L + Position_H)) & 0xFF;
+	Checksum = (~(ID + AX_GOAL_LENGTH + AX_WRITE_DATA + AX_GOAL_POSITION_L + Position_L + Position_H)) & 0xFF;
 
     packet[0] = AX_START;
     packet[1] = AX_START;
@@ -157,7 +157,7 @@ int AX12AClass::move(unsigned char ID, int Position)
     packet[7] = Position_H;
     packet[8] = Checksum;
 
-    return (sendPacket(packet, length));
+    return (sendAXPacket(packet, length));
 }
 
 int AX12AClass::moveSpeed(unsigned char ID, int Position, int Speed)
@@ -169,7 +169,7 @@ int AX12AClass::moveSpeed(unsigned char ID, int Position, int Speed)
     Speed_L = Speed;                      // 16 bits - 2 x 8 bits variables
 
     const unsigned int length = 11;
-    byte packet[length];
+    unsigned char packet[length];
     
     Checksum = (~(ID + AX_GOAL_SP_LENGTH + AX_WRITE_DATA + AX_GOAL_POSITION_L + Position_L + Position_H + Speed_L + Speed_H)) & 0xFF;
 
@@ -185,7 +185,7 @@ int AX12AClass::moveSpeed(unsigned char ID, int Position, int Speed)
     packet[9] = Speed_H;
     packet[10] = Checksum;
 
-    return (sendPacket(packet, length));
+    return (sendAXPacket(packet, length));
 }
 
 int AX12AClass::setEndless(unsigned char ID, bool Status)
@@ -193,7 +193,7 @@ int AX12AClass::setEndless(unsigned char ID, bool Status)
 	if ( Status )
 	{
 		const unsigned int length = 9;
-		byte packet[length];
+		unsigned char packet[length];
 
 		Checksum = (~(ID + AX_GOAL_LENGTH + AX_WRITE_DATA + AX_CCW_ANGLE_LIMIT_L)) & 0xFF;
 
@@ -207,14 +207,14 @@ int AX12AClass::setEndless(unsigned char ID, bool Status)
 	    packet[7] = 0;						// full rotation
 	    packet[8] = Checksum;
 
-	    return (sendPacket(packet, length));
+	    return (sendAXPacket(packet, length));
 	}
 	else
 	{
 		turn(ID,0,0);
 
 		const unsigned int length = 9;
-		byte packet[length];
+		unsigned char packet[length];
 
 		Checksum = (~(ID + AX_GOAL_LENGTH + AX_WRITE_DATA + AX_CCW_ANGLE_LIMIT_L + AX_CCW_AL_L + AX_CCW_AL_H)) & 0xFF;
 
@@ -228,7 +228,7 @@ int AX12AClass::setEndless(unsigned char ID, bool Status)
 	    packet[7] = AX_CCW_AL_H;
 	    packet[8] = Checksum;
 
-	    return (sendPacket(packet, length));
+	    return (sendAXPacket(packet, length));
 	}
 }
 
@@ -241,7 +241,7 @@ int AX12AClass::turn(unsigned char ID, bool SIDE, int Speed)
 			Speed_L = Speed;                     // 16 bits - 2 x 8 bits variables
 			
 			const unsigned int length = 9;
-			byte packet[length];
+			unsigned char packet[length];
 			
 			Checksum = (~(ID + AX_SPEED_LENGTH + AX_WRITE_DATA + AX_GOAL_SPEED_L + Speed_L + Speed_H)) & 0xFF;
 
@@ -255,7 +255,7 @@ int AX12AClass::turn(unsigned char ID, bool SIDE, int Speed)
 		    packet[7] = Speed_H;
 		    packet[8] = Checksum;
 
-		    return (sendPacket(packet, length));
+		    return (sendAXPacket(packet, length));
 		}
 
 		else
@@ -265,7 +265,7 @@ int AX12AClass::turn(unsigned char ID, bool SIDE, int Speed)
 			Speed_L = Speed;                     // 16 bits - 2 x 8 bits variables
 			
 			const unsigned int length = 9;
-			byte packet[length];
+			unsigned char packet[length];
 
 			Checksum = (~(ID + AX_SPEED_LENGTH + AX_WRITE_DATA + AX_GOAL_SPEED_L + Speed_L + Speed_H)) & 0xFF;
 			
@@ -279,7 +279,7 @@ int AX12AClass::turn(unsigned char ID, bool SIDE, int Speed)
 		    packet[7] = Speed_H;
 		    packet[8] = Checksum;
 
-		    return (sendPacket(packet, length));
+		    return (sendAXPacket(packet, length));
 		}
 }
 
@@ -290,7 +290,7 @@ int AX12AClass::moveRW(unsigned char ID, int Position)
     Position_L = Position;
 
 	const unsigned int length = 9;
-	byte packet[length];
+	unsigned char packet[length];
 
     Checksum = (~(ID + AX_GOAL_LENGTH + AX_REG_WRITE + AX_GOAL_POSITION_L + Position_L + Position_H)) & 0xFF;
 
@@ -304,7 +304,7 @@ int AX12AClass::moveRW(unsigned char ID, int Position)
     packet[7] = Position_H;
     packet[8] = Checksum;
 	
-    return (sendPacket(packet, length));
+    return (sendAXPacket(packet, length));
 }
 
 int AX12AClass::moveSpeedRW(unsigned char ID, int Position, int Speed)
@@ -316,7 +316,7 @@ int AX12AClass::moveSpeedRW(unsigned char ID, int Position, int Speed)
     Speed_L = Speed;                      // 16 bits - 2 x 8 bits variables
 
 	const unsigned int length = 11;
-	byte packet[length];
+	unsigned char packet[length];
 
     Checksum = (~(ID + AX_GOAL_SP_LENGTH + AX_REG_WRITE + AX_GOAL_POSITION_L + Position_L + Position_H + Speed_L + Speed_H)) & 0xFF;
 
@@ -332,13 +332,13 @@ int AX12AClass::moveSpeedRW(unsigned char ID, int Position, int Speed)
     packet[9] = Speed_H;
     packet[10] = Checksum;
 	
-    return (sendPacket(packet, length));
+    return (sendAXPacket(packet, length));
 }
 
 void AX12AClass::action()
 {	
 	const unsigned int length = 6;
-	byte packet[length];
+	unsigned char packet[length];
 
     packet[0] = AX_START;
     packet[1] = AX_START;
@@ -347,13 +347,13 @@ void AX12AClass::action()
     packet[4] = AX_ACTION;
     packet[5] = AX_ACTION_CHECKSUM;
 
-    sendPacket(packet, length);
+    sendAXPacket(packet, length);
 }
 
 int AX12AClass::torqueStatus( unsigned char ID, bool Status)
 {
 	const unsigned int length = 8;
-	byte packet[length];
+	unsigned char packet[length];
 
 	Checksum = (~(ID + AX_TORQUE_LENGTH + AX_WRITE_DATA + AX_TORQUE_ENABLE + Status)) & 0xFF;
 
@@ -366,15 +366,15 @@ int AX12AClass::torqueStatus( unsigned char ID, bool Status)
     packet[6] = Status;
     packet[7] = Checksum;
     
-    return (sendPacket(packet, length));
+    return (sendAXPacket(packet, length));
 }
 
 int AX12AClass::ledStatus(unsigned char ID, bool Status)
 {    
 	const unsigned int length = 8;
-	byte packet[length];
+	unsigned char packet[length];
 
-	byte Checksum = (~(ID + AX_LED_LENGTH + AX_WRITE_DATA + AX_LED + Status)) & 0xFF;
+	Checksum = (~(ID + AX_LED_LENGTH + AX_WRITE_DATA + AX_LED + Status)) & 0xFF;
 
 	packet[0] = AX_START;
 	packet[1] = AX_START;
@@ -385,13 +385,13 @@ int AX12AClass::ledStatus(unsigned char ID, bool Status)
 	packet[6] = Status;
 	packet[7] = Checksum;
 
-	return (sendPacket(packet, length)); // return error
+	return (sendAXPacket(packet, length)); // return error
 }
 
 int AX12AClass::readTemperature(unsigned char ID)
 {	
 	const unsigned int length = 8;
-	byte packet[length];
+	unsigned char packet[length];
 
     Checksum = (~(ID + AX_TEM_LENGTH + AX_READ_DATA + AX_PRESENT_TEMPERATURE + AX_BYTE_READ)) & 0xFF;
 
@@ -404,7 +404,7 @@ int AX12AClass::readTemperature(unsigned char ID)
 	packet[6] = AX_BYTE_READ;
 	packet[7] = Checksum;
 
-	sendPacketNoError(packet, length);
+	sendAXPacketNoError(packet, length);
 	
     Temperature_Byte = -1;
     Time_Counter = 0;
@@ -433,7 +433,7 @@ int AX12AClass::readTemperature(unsigned char ID)
 int AX12AClass::readPosition(unsigned char ID)
 {	
 	const unsigned int length = 8;
-	byte packet[length];
+	unsigned char packet[length];
 
     Checksum = (~(ID + AX_POS_LENGTH + AX_READ_DATA + AX_PRESENT_POSITION_L + AX_BYTE_READ_POS)) & 0xFF;
 
@@ -446,7 +446,7 @@ int AX12AClass::readPosition(unsigned char ID)
 	packet[6] = AX_BYTE_READ_POS;
 	packet[7] = Checksum;
 
-	sendPacketNoError(packet, length);
+	sendAXPacketNoError(packet, length);
 	
     Position_Long_Byte = -1;
 	Time_Counter = 0;
@@ -479,7 +479,7 @@ int AX12AClass::readPosition(unsigned char ID)
 int AX12AClass::readVoltage(unsigned char ID)
 {    
 	const unsigned int length = 8;
-	byte packet[length];
+	unsigned char packet[length];
 
     Checksum = (~(ID + AX_VOLT_LENGTH + AX_READ_DATA + AX_PRESENT_VOLTAGE + AX_BYTE_READ)) & 0xFF;
 
@@ -492,7 +492,7 @@ int AX12AClass::readVoltage(unsigned char ID)
 	packet[6] = AX_BYTE_READ;
 	packet[7] = Checksum;
 
-    sendPacketNoError(packet, length);
+    sendAXPacketNoError(packet, length);
 	
     Voltage_Byte = -1;
 	Time_Counter = 0;
@@ -521,7 +521,7 @@ int AX12AClass::readVoltage(unsigned char ID)
 int AX12AClass::setTempLimit(unsigned char ID, unsigned char Temperature)
 {
 	const unsigned int length = 8;
-	byte packet[length];
+	unsigned char packet[length];
 
 	Checksum = (~(ID + AX_TL_LENGTH + AX_WRITE_DATA + AX_LIMIT_TEMPERATURE + Temperature)) & 0xFF;
 	
@@ -534,13 +534,13 @@ int AX12AClass::setTempLimit(unsigned char ID, unsigned char Temperature)
 	packet[6] = Temperature;
 	packet[7] = Checksum;
 	
-	return (sendPacket(packet, length));
+	return (sendAXPacket(packet, length));
 }
 
 int AX12AClass::setVoltageLimit(unsigned char ID, unsigned char DVoltage, unsigned char UVoltage)
 {
 	const unsigned int length = 9;
-	byte packet[length];
+	unsigned char packet[length];
 
 	Checksum = (~(ID + AX_VL_LENGTH + AX_WRITE_DATA + AX_DOWN_LIMIT_VOLTAGE + DVoltage + UVoltage)) & 0xFF;
 	
@@ -554,7 +554,7 @@ int AX12AClass::setVoltageLimit(unsigned char ID, unsigned char DVoltage, unsign
 	packet[7] = UVoltage;
 	packet[8] = Checksum;
 	
-	return (sendPacket(packet, length));
+	return (sendAXPacket(packet, length));
 }
 
 int AX12AClass::setAngleLimit(unsigned char ID, int CWLimit, int CCWLimit)
@@ -566,7 +566,7 @@ int AX12AClass::setAngleLimit(unsigned char ID, int CWLimit, int CCWLimit)
     CCW_L = CCWLimit;  
 
 	const unsigned int length = 12;
-	byte packet[length];
+	unsigned char packet[length];
 	
 	Checksum = (~(ID + AX_VL_LENGTH + AX_WRITE_DATA + AX_CW_ANGLE_LIMIT_L + CW_H + CW_L + AX_CCW_ANGLE_LIMIT_L + CCW_H + CCW_L)) & 0xFF;
 	
@@ -583,7 +583,7 @@ int AX12AClass::setAngleLimit(unsigned char ID, int CWLimit, int CCWLimit)
 	packet[10] = CCW_H;
 	packet[11] = Checksum;
 
-	return (sendPacket(packet, length));
+	return (sendAXPacket(packet, length));
 }
 
 int AX12AClass::setMaxTorque(unsigned char ID, int MaxTorque)
@@ -593,7 +593,7 @@ int AX12AClass::setMaxTorque(unsigned char ID, int MaxTorque)
     MaxTorque_L = MaxTorque;
     
 	const unsigned int length = 9;
-	byte packet[length];
+	unsigned char packet[length];
 
 	Checksum = (~(ID + AX_MT_LENGTH + AX_WRITE_DATA + AX_MAX_TORQUE_L + MaxTorque_L + MaxTorque_H)) & 0xFF;
 
@@ -607,13 +607,13 @@ int AX12AClass::setMaxTorque(unsigned char ID, int MaxTorque)
 	packet[7] = MaxTorque_H;
 	packet[8] = Checksum;
 	
-	return (sendPacket(packet, length));
+	return (sendAXPacket(packet, length));
 }
 
 int AX12AClass::setSRL(unsigned char ID, unsigned char SRL)
 {    
 	const unsigned int length = 8;
-	byte packet[length];
+	unsigned char packet[length];
 
 	Checksum = (~(ID + AX_SRL_LENGTH + AX_WRITE_DATA + AX_RETURN_LEVEL + SRL)) & 0xFF;
 
@@ -626,13 +626,13 @@ int AX12AClass::setSRL(unsigned char ID, unsigned char SRL)
 	packet[6] = SRL;
 	packet[7] = Checksum;
 	
-	return (sendPacket(packet, length));
+	return (sendAXPacket(packet, length));
 }
 
 int AX12AClass::setRDT(unsigned char ID, unsigned char RDT)
 {    
 	const unsigned int length = 8;
-	byte packet[length];
+	unsigned char packet[length];
 	
 	Checksum = (~(ID + AX_RDT_LENGTH + AX_WRITE_DATA + AX_RETURN_DELAY_TIME + (RDT / 2))) & 0xFF;
 
@@ -645,13 +645,13 @@ int AX12AClass::setRDT(unsigned char ID, unsigned char RDT)
 	packet[6] = (RDT/2);
 	packet[7] = Checksum;
     
-	return (sendPacket(packet, length));
+	return (sendAXPacket(packet, length));
 }
 
 int AX12AClass::setLEDAlarm(unsigned char ID, unsigned char LEDAlarm)
 {    
 	const unsigned int length = 8;
-	byte packet[length];
+	unsigned char packet[length];
 
 	Checksum = (~(ID + AX_LEDALARM_LENGTH + AX_WRITE_DATA + AX_ALARM_LED + LEDAlarm)) & 0xFF;
 
@@ -664,13 +664,13 @@ int AX12AClass::setLEDAlarm(unsigned char ID, unsigned char LEDAlarm)
 	packet[6] = LEDAlarm;
 	packet[7] = Checksum;
 	
-	return (sendPacket(packet, length));
+	return (sendAXPacket(packet, length));
 }
 
 int AX12AClass::setShutdownAlarm(unsigned char ID, unsigned char SALARM)
 {    
 	const unsigned int length = 8;
-	byte packet[length];
+	unsigned char packet[length];
 	
 	Checksum = (~(ID + AX_SALARM_LENGTH + AX_ALARM_SHUTDOWN + AX_ALARM_LED + SALARM)) & 0xFF;
 
@@ -683,13 +683,13 @@ int AX12AClass::setShutdownAlarm(unsigned char ID, unsigned char SALARM)
 	packet[6] = SALARM;
 	packet[7] = Checksum;
     
-	return (sendPacket(packet, length));
+	return (sendAXPacket(packet, length));
 }
 
 int AX12AClass::setCMargin(unsigned char ID, unsigned char CWCMargin, unsigned char CCWCMargin)
 {
 	const unsigned int length = 10;
-	byte packet[length];
+	unsigned char packet[length];
 
 	Checksum = (~(ID + AX_CM_LENGTH + AX_WRITE_DATA + AX_CW_COMPLIANCE_MARGIN + CWCMargin + AX_CCW_COMPLIANCE_MARGIN + CCWCMargin)) & 0xFF;
 	
@@ -704,13 +704,13 @@ int AX12AClass::setCMargin(unsigned char ID, unsigned char CWCMargin, unsigned c
 	packet[8] = CCWCMargin;
 	packet[9] = Checksum;
 	
-	return (sendPacket(packet, length));
+	return (sendAXPacket(packet, length));
 }
 
 int AX12AClass::setCSlope(unsigned char ID, unsigned char CWCSlope, unsigned char CCWCSlope)
 {
 	const unsigned int length = 10;
-	byte packet[length];
+	unsigned char packet[length];
 
 	Checksum = (~(ID + AX_CS_LENGTH + AX_WRITE_DATA + AX_CW_COMPLIANCE_SLOPE + CWCSlope + AX_CCW_COMPLIANCE_SLOPE + CCWCSlope)) & 0xFF;
 	
@@ -725,7 +725,7 @@ int AX12AClass::setCSlope(unsigned char ID, unsigned char CWCSlope, unsigned cha
 	packet[8] = CCWCSlope;
 	packet[9] = Checksum;
 	
-	return (sendPacket(packet, length));
+	return (sendAXPacket(packet, length));
 }
 
 int AX12AClass::setPunch(unsigned char ID, int Punch)
@@ -735,7 +735,7 @@ int AX12AClass::setPunch(unsigned char ID, int Punch)
     Punch_L = Punch;
 
 	const unsigned int length = 9;
-	byte packet[length];
+	unsigned char packet[length];
 
 	Checksum = (~(ID + AX_PUNCH_LENGTH + AX_WRITE_DATA + AX_PUNCH_L + Punch_L + Punch_H)) & 0xFF;
     
@@ -749,13 +749,13 @@ int AX12AClass::setPunch(unsigned char ID, int Punch)
 	packet[7] = Punch_H;
 	packet[8] = Checksum;
 	
-	return (sendPacket(packet, length));
+	return (sendAXPacket(packet, length));
 }
 
 int AX12AClass::moving(unsigned char ID)
 {	
 	const unsigned int length = 8;
-	byte packet[length];
+	unsigned char packet[length];
 
 	Checksum = (~(ID + AX_MOVING_LENGTH + AX_READ_DATA + AX_MOVING + AX_BYTE_READ)) & 0xFF;
     
@@ -768,7 +768,7 @@ int AX12AClass::moving(unsigned char ID)
 	packet[6] = AX_BYTE_READ;
 	packet[7] = Checksum;
 	
-	sendPacketNoError(packet, length);
+	sendAXPacketNoError(packet, length);
 
     Moving_Byte = -1;
     Time_Counter = 0;
@@ -797,7 +797,7 @@ int AX12AClass::moving(unsigned char ID)
 int AX12AClass::lockRegister(unsigned char ID)
 {    
 	const unsigned int length = 8;
-	byte packet[length];
+	unsigned char packet[length];
 	
 	Checksum = (~(ID + AX_LR_LENGTH + AX_WRITE_DATA + AX_LOCK + LOCK)) & 0xFF;
     
@@ -810,13 +810,13 @@ int AX12AClass::lockRegister(unsigned char ID)
 	packet[6] = LOCK;
 	packet[7] = Checksum;
 
-	return (sendPacket(packet, length));
+	return (sendAXPacket(packet, length));
 }
 
 int AX12AClass::RWStatus(unsigned char ID)
 {	
 	const unsigned int length = 8;
-	byte packet[length];
+	unsigned char packet[length];
 
 	Checksum = (~(ID + AX_RWS_LENGTH + AX_READ_DATA + AX_REGISTERED_INSTRUCTION + AX_BYTE_READ)) & 0xFF;
     
@@ -829,7 +829,7 @@ int AX12AClass::RWStatus(unsigned char ID)
 	packet[6] = AX_BYTE_READ;
 	packet[7] = Checksum;
 	
-	sendPacketNoError(packet, length);
+	sendAXPacketNoError(packet, length);
 
     RWS_Byte = -1;
     Time_Counter = 0;
@@ -858,7 +858,7 @@ int AX12AClass::RWStatus(unsigned char ID)
 int AX12AClass::readSpeed(unsigned char ID)
 {	
 	const unsigned int length = 8;
-	byte packet[length];
+	unsigned char packet[length];
 
 	Checksum = (~(ID + AX_POS_LENGTH + AX_READ_DATA + AX_PRESENT_SPEED_L + AX_BYTE_READ_POS)) & 0xFF;
 	
@@ -871,7 +871,7 @@ int AX12AClass::readSpeed(unsigned char ID)
 	packet[6] = AX_BYTE_READ_POS;
 	packet[7] = Checksum;
 	
-	sendPacketNoError(packet, length);
+	sendAXPacketNoError(packet, length);
 
     Speed_Long_Byte = -1;
 	Time_Counter = 0;
@@ -904,7 +904,7 @@ int AX12AClass::readSpeed(unsigned char ID)
 int AX12AClass::readLoad(unsigned char ID)
 {	
 	const unsigned int length = 8;
-	byte packet[length];
+	unsigned char packet[length];
 
 	Checksum = (~(ID + AX_POS_LENGTH + AX_READ_DATA + AX_PRESENT_LOAD_L + AX_BYTE_READ_POS)) & 0xFF;
 
@@ -917,7 +917,7 @@ int AX12AClass::readLoad(unsigned char ID)
 	packet[6] = AX_BYTE_READ_POS;
 	packet[7] = Checksum;
 	
-	sendPacketNoError(packet, length);
+	sendAXPacketNoError(packet, length);
 
     Load_Long_Byte = -1;
 	Time_Counter = 0;
@@ -947,7 +947,7 @@ int AX12AClass::readLoad(unsigned char ID)
 	return (Load_Long_Byte);     // Returns the read position
 }
 
-int AX12AClass::sendPacket(byte* packet, unsigned int length)
+int AX12AClass::sendAXPacket(unsigned char * packet, unsigned int length)
 {
 	switchCom(Direction_Pin, TX_MODE); 	// Switch to Transmission  Mode
 
@@ -959,7 +959,7 @@ int AX12AClass::sendPacket(byte* packet, unsigned int length)
 	return (read_error());              // Return the read error
 }
 
-void AX12AClass::sendPacketNoError(byte* packet, unsigned int length)
+void AX12AClass::sendAXPacketNoError(unsigned char * packet, unsigned int length)
 {
 	switchCom(Direction_Pin, TX_MODE); 	// Switch to Transmission  Mode
 
@@ -969,10 +969,10 @@ void AX12AClass::sendPacketNoError(byte* packet, unsigned int length)
 	switchCom(Direction_Pin, RX_MODE); 	// Switch back to Reception Mode
 }
 
-int AX12AClass::readRegister(unsigned char ID, byte reg, byte reg_len)
+int AX12AClass::readRegister(unsigned char ID, unsigned char reg, unsigned char reg_len)
 {
 	const unsigned int length = 8;
-	byte packet[length];
+	unsigned char packet[length];
 
 	Checksum = (~(ID + 4 + AX_READ_DATA + reg + reg_len)) & 0xFF;
 
@@ -985,7 +985,7 @@ int AX12AClass::readRegister(unsigned char ID, byte reg, byte reg_len)
 	packet[6] = reg_len;
 	packet[7] = Checksum;
 
-	sendPacketNoError(packet, length);
+	sendAXPacketNoError(packet, length);
 
 	returned_Byte = -1;
 	Time_Counter = 0;

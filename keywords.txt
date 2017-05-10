@@ -44,7 +44,7 @@ readVoltage     	KEYWORD2
 
 # Constants (LITERAL1)
 
-OFF     	        LITERAL1
-ON              	LITERAL1
+OFF					LITERAL1
+ON					LITERAL1
 LEFT            	LITERAL1
 RIGHT           	LITERAL1

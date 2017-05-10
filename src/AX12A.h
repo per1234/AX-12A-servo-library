@@ -193,8 +193,8 @@ public:
 	int torqueStatus(unsigned char ID, bool Status);
 	int ledStatus(unsigned char ID, bool Status);
 
-	int sendPacket(byte *packet, unsigned int length);
-	void sendPacketNoError(byte *packet, unsigned int length);
+	int sendAXPacket(unsigned char *packet, unsigned int length);
+	void sendAXPacketNoError(unsigned char *packet, unsigned int length);
 
 	int readRegister(unsigned char ID, byte reg, byte reg_len);
 };
