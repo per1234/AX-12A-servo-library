@@ -1,12 +1,13 @@
 #include "Arduino.h"
 #include "src/AX12A.h"
 
-unsigned char Direction_Pin = 10;
-long baud = 1000000;
+#define DirectionPin 	(2u)
+#define BaudRate  		(1000000ul)
+#define ID				(1u)
 
 void setup()
 {
-	AX12A.begin(baud, Direction_Pin, &Serial);
+	AX12A.begin(BaudRate, DirectionPin, &Serial1);
 }
 
 void loop()
