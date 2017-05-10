@@ -11,9 +11,9 @@
 
 void setup()
 {
-	AX12A.begin(BaudRate, DirectionPin, &Serial);
-	AX12A.setEndless(ID, ON);
-	AX12A.turn(ID, LEFT, 100);
+	ax12a.begin(BaudRate, DirectionPin, &Serial);
+	ax12a.setEndless(ID, ON);
+	ax12a.turn(ID, LEFT, 100);
 }
 
 void loop()

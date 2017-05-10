@@ -18,7 +18,7 @@ int delta = 5;
 
 void setup()
 {
-	AX12A.begin(BaudRate, DirectionPin, &Serial);
+	ax12a.begin(BaudRate, DirectionPin, &Serial);
 }
 
 void loop()
@@ -37,6 +37,6 @@ void loop()
 		delta *= -1;
 	}
 
-	AX12A.move(ID, pos);
+	ax12a.move(ID, pos);
 	delay(20);
 }

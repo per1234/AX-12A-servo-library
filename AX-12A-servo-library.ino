@@ -7,13 +7,13 @@
 
 void setup()
 {
-	AX12A.begin(BaudRate, DirectionPin, &Serial);
+	ax12a.begin(BaudRate, DirectionPin, &Serial);
 }
 
 void loop()
 {
-	AX12A.ledStatus(1, ON);
+	ax12a.ledStatus(1, ON);
 	delay(1000);
-	AX12A.ledStatus(1, OFF);
+	ax12a.ledStatus(1, OFF);
 	delay(1000);
 }
