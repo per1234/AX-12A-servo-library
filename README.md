@@ -11,7 +11,13 @@
 - Put the folder into your library folder (usually Documents/Arduino/libraries)
 
 ## How to use the library
-To use the library, include header file located in the src folder :
+To use the library, include header file located in the src folder.
+
+Using Arduino IDE :
+```
+#include "AX12A.h"
+```
+else :
 ```
 #include "src/AX12A.h"
 ```
@@ -24,9 +30,9 @@ The library is provided with 4 Arduino examples :
 
 You have 4 lines to configure :
 ```
-#define DirectionPin 	(10u)
-#define BaudRate  		(1000000ul)
-#define ID				(1u)
+#define DirectionPin  (10u)
+#define BaudRate      (1000000ul)
+#define ID            (1u)
 ...
 AX12A.begin(BaudRate, DirectionPin, &Serial);
 ```

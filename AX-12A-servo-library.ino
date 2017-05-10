@@ -12,8 +12,8 @@ void setup()
 
 void loop()
 {
-	ax12a.ledStatus(1, ON);
+	ax12a.ledStatus(ID, ON);
 	delay(1000);
-	ax12a.ledStatus(1, OFF);
+	ax12a.ledStatus(ID, OFF);
 	delay(1000);
 }
