@@ -120,7 +120,7 @@
 
 #include <inttypes.h>
 
-class AX12AClass {
+class AX12A {
 private:
 	
 	unsigned char Checksum;
@@ -199,6 +199,6 @@ public:
 	int readRegister(unsigned char ID, unsigned char reg, unsigned char reg_len);
 };
 
-extern AX12AClass AX12A;
+extern AX12A ax12a;
 
 #endif

@@ -14,12 +14,12 @@ int reg = 0;
 
 void setup()
 {
-	AX12A.begin(BaudRate, DirectionPin, &Serial);
+	ax12a.begin(BaudRate, DirectionPin, &Serial);
 }
 
 void loop()
 {
-	reg = AX12A.readRegister(ID, AX_PRESENT_VOLTAGE, 1);
+	reg = ax12a.readRegister(ID, AX_PRESENT_VOLTAGE, 1);
 	Serial.println(reg);
 
 	delay(1000);
