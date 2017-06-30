@@ -13,13 +13,8 @@
 ## How to use the library
 To use the library, include header file located in the src folder.
 
-Using Arduino IDE :
 ```
 #include "AX12A.h"
-```
-else :
-```
-#include "src/AX12A.h"
 ```
 
 The library is provided with 4 Arduino examples :
