@@ -4,13 +4,13 @@
 
 [AX-12A Datasheet][Datasheet]
 
-## How to install the library
+## Installing the library
 - Download zip file
 - Extract zip
 - Rename the folder : AX-12A-servo-library-master --> AX-12A-servo-library
 - Put the folder into your library folder (usually Documents/Arduino/libraries)
 
-## How to use the library
+## Using the library
 To use the library, include header file located in the src folder.
 
 ```
